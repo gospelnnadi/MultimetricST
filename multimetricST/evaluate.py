@@ -110,7 +110,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         ARI, AMI, purity, homogeneity, completeness, v_measure = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
 
     # Compute clustering metrics if at least 2 clusters are present
-    if len(pred) > 1:
+    if len(np.unique(pred)) > 1:
         # Spatial silhouette score (custom metric considering spatial info)
         silhouette_spatial = silhouette_spatial_score(pca_matrix, pred, adata, metric="cosine", is_visium=is_visium)
         silhouette_spatial = np.round(silhouette_spatial, decimal)
