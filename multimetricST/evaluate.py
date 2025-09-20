@@ -7,6 +7,24 @@ from scipy.sparse import issparse
 import matplotlib.pyplot as plt
 import seaborn as sns
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium=False,verbose=True,decimal=4):
   
     """
@@ -128,7 +146,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
 
         # CHAOS: cluster homogeneity metric in spatial context
         chaos = compute_CHAOS(pred, adata.obsm['spatial'])
-        chaos = np.round(chaos, decimal) * 100  # scale to percentage
+        chaos = np.round(chaos * 100 , decimal) # scale to percentage
 
         # PAS: spatial autocorrelation preservation metric
         pas = compute_PAS(pred, adata.obsm['spatial'])
@@ -174,7 +192,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         "Homogeneity": eval_result[3],
         "Completeness": eval_result[4],
         "V-Measure": eval_result[5],
-        "SSS": eval_result[6],
+        "Silhouette-Spatial": eval_result[6],
         "SSS-Penalty": eval_result[7],
         "Silhouette": eval_result[8],
         "Davies-Bouldin": eval_result[9],
@@ -184,3 +202,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     }
 
     return metrics_dict
+
+
+
+

@@ -8,7 +8,7 @@ setup(
     name='MultimetricST',
     version='0.1.0',
     author='Gospel Ozioma Nnadi',
-    description='Multi-Perspective Evaluation of Spatial Transcriptomics Clustering Methods',
+    description='A Multi-Perspective Evaluation Framework of Spatial Transcriptomics Clustering Methods',
     author_email ='gospelozioma.nnadi@univr.it',
     license = 'MIT',
     packages =find_packages(), 
@@ -16,5 +16,5 @@ setup(
     python_requires='>=3.10',
     zip_safe = False,
     include_package_data = True,
-    url='https://github.com/gospelnnadi/MultimetricST',
+    url='https://github.com/InfOmics/MultimetricST.git',
 )
