@@ -36,7 +36,7 @@ pip install -r requirements2.txt
 
 ````
 
-Run clustering and evaluation in folder Spatial_Clustering_Methods:
+Run clustering and evaluation in folder Spatial_Clustering_Methods Clustering_Tutorial.py downloads the varous methods repos, run each method and  save results to clustering_results.csv:
     cd Spatial_Clustering_Methods
 
     python Clustering_Tutorial.py 
