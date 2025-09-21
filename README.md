@@ -48,3 +48,8 @@ Note: To run the SpaceFlow method from the downloaded repo, the code In Spatial_
 
 ### Data Availability ###
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/17167458
+
+Download the DLPFC 151673 data used in Clustering_Tutorial.py :
+        wget https://zenodo.org/records/17167458/files/Data.zip
+
+
