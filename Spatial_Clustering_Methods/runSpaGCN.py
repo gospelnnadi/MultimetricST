@@ -23,16 +23,11 @@ start_time = time.time()
 tracemalloc.start()
 
 
-def run(path,data_name , n_clusters=7): 
+def run(adata ,data_name,data_type='Visium',n_clusters=7): 
     start_time = time.time()
     tracemalloc.start()
   
-#Read in gene expression and spatial location
-    adata = sc.read_visium(f"{path}/{data_name}", count_file='filtered_feature_bc_matrix.h5', load_images=True)
-
-
-    adata.var_names_make_unique()
-    spatial=pd.read_csv(f"{path}/{data_name}/spatial/tissue_positions_list.csv",sep=",",header=None,na_filter=False,index_col=0) 
+    """ spatial=pd.read_csv(f"{path}/{data_name}/spatial/tissue_positions_list.csv",sep=",",header=None,na_filter=False,index_col=0) 
 
 
     adata.obs["x1"]=spatial[1]
@@ -56,7 +51,7 @@ def run(path,data_name , n_clusters=7):
     y_pixel=adata.obs["y_pixel"].tolist()
 
     adata.var_names=adata.var.index.astype("str")
-    adata.var_names_make_unique()
+    adata.var_names_make_unique() """
     spg.prefilter_genes(adata,min_cells=3) # avoiding all genes are zeros
     spg.prefilter_specialgenes(adata)
     #Normalize and take log for UMI
@@ -117,7 +112,7 @@ def run(path,data_name , n_clusters=7):
     print(f"Current memory usage: {current} MB")
     print(f"Peak memory usage: {peak} MB")
 
-    adj_2d=spg.calculate_adj_matrix(x=x_array,y=y_array, histology=False)
+    adj_2d=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
     refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
     adata.obs["refined_pred"]=refined_pred
     adata.obs["refined_pred"]=adata.obs["refined_pred"].astype('category')
@@ -125,6 +120,6 @@ def run(path,data_name , n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata 
+    return adata.obs['refined_pred'],finaltime, peak
 
 

@@ -15,7 +15,7 @@ import tracemalloc
 start_time = time.time()
 tracemalloc.start()
 
-def run(path, data_name, n_clusters=7):
+def run(adata ,data_name,data_type='Visium',n_clusters=7,use_morphological=False):
     start_time = time.time()
     tracemalloc.start()
     SEED = 0   
@@ -38,17 +38,35 @@ def run(path, data_name, n_clusters=7):
     use_gpu=True             # Accelerate with GPU if available
 )
     ###### Read in 10x Visium data, or user can read in themselves.
-    adata = deepen._get_adata(platform="Visium", data_path=path, data_name=data_name)
+    #adata = deepen._get_adata(platform="Visium", data_path=path, data_name=data_name)
     ###### Segment the Morphological Image
-    adata = deepen._get_image_crop(adata, data_name=data_name) 
+    #adata = deepen._get_image_crop(adata, data_name=data_name) 
 
     ###### Data augmentation. spatial_type includes three kinds of "KDTree", "BallTree" and "LinearRegress", among which "LinearRegress"
     ###### is only applicable to 10x visium and the remaining omics selects the other two.
     ###### "use_morphological" defines whether to use morphological images.
-    adata = deepen._get_augment(adata, spatial_type="LinearRegress", use_morphological=True)
+    #adata = deepen._get_augment(adata, spatial_type="LinearRegress", use_morphological=True)
+    #adata = deepen._get_augment(adata, spatial_type="LinearRegress", use_morphological=False)
 
+    
+    if use_morphological:
+    
+      adata = deepen._get_image_crop(adata, data_name=data_name) 
+
+      ###### Data augmentation. spatial_type includes three kinds of "KDTree", "BallTree" and "LinearRegress", among which "LinearRegress"
+      ###### is only applicable to 10x visium and the remaining omics selects the other two.
+      ###### "use_morphological" defines whether to use morphological images.
+      adata = deepen._get_augment(adata, spatial_type="LinearRegress", use_morphological=True)
+    else :
+        adata.var_names_make_unique()
+        ###### Data augmentation. spatial_type includes three kinds of "KDTree", "BallTree" and "LinearRegress", among which "LinearRegress"
+        ###### is only applicable to 10x visium and the remaining omics selects the other two.
+        ###### "use_morphological" defines whether to use morphological images.
+        adata = deepen._get_augment(adata,use_data = "raw",  spatial_type = "BallTree", use_morphological=False)
+    
     ###### Build graphs. "distType" includes "KDTree", "BallTree", "kneighbors_graph", "Radius", etc., see adj.py
     graph_dict = deepen._get_graph(adata.obsm["spatial"], distType = "BallTree")
+  
 
     ###### Enhanced data preprocessing
     data = deepen._data_process(adata, pca_n_comps = 200)
@@ -79,5 +97,5 @@ def run(path, data_name, n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata 
+    return adata.obs['DeepST_refine_domain'],finaltime, peak
 

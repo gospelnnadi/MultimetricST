@@ -43,15 +43,9 @@ def res_search_fixed_clus(adata, fixed_clus_count, increment=0.02):
             break
     return res
 
-def run (path,data_name,  n_clusters=7):
+def run (adata ,data_name,data_type='Visium',n_clusters=7):
     start_time = time.time()
     tracemalloc.start()
-    path=f"{path}/{data_name}"
-    adata = sc.read_visium(path, count_file='filtered_feature_bc_matrix.h5', load_images=True)
-    
-    
-    adata.var_names_make_unique()
-
    
     pts = adata.obsm['spatial']
     df_sp = pd.DataFrame(data=adata.X.toarray(), columns=list(adata.var_names))
@@ -97,5 +91,5 @@ def run (path,data_name,  n_clusters=7):
     adata.uns['peak_memory'] = peak
 
  
-    return adata
+    return adata.obs['scanit_leiden'],finaltime, peak
  

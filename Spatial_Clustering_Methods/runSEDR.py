@@ -23,7 +23,7 @@ tracemalloc.start()
 
 
 
-def run(path, data_name , n_clusters=7):  
+def run(adata ,data_name,data_type='Visium',n_clusters=7):  
     start_time = time.time()
     tracemalloc.start()
     random_seed = 2023
@@ -31,12 +31,7 @@ def run(path, data_name , n_clusters=7):
     # gpu
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 
-    # path
-    data_root = Path(path)
-
-    adata = sc.read_visium(data_root / data_name)
-    adata.var_names_make_unique()
-    adata.layers['count'] = adata.X.toarray()
+    adata.layers['count'] = adata.X.copy()
     sc.pp.filter_genes(adata, min_cells=50)
     sc.pp.filter_genes(adata, min_counts=10)
     sc.pp.normalize_total(adata, target_sum=1e6)
@@ -75,4 +70,4 @@ def run(path, data_name , n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata 
+    return adata.obs['SEDR'],finaltime, peak

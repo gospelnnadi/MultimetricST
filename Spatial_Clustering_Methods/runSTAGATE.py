@@ -12,13 +12,11 @@ import tracemalloc
 start_time = time.time()
 tracemalloc.start()
 
-def run(path, data_name , n_clusters=7): 
+def run(adata ,data_name,data_type='Visium',n_clusters=7): 
     start_time = time.time()
     tracemalloc.start()
 
-    adata = sc.read_visium(f"{path}/{data_name}", count_file='filtered_feature_bc_matrix.h5', load_images=True)
 
-    adata.var_names_make_unique()
     #Normalization
     sc.pp.highly_variable_genes(adata, flavor="seurat_v3", n_top_genes=3000)
     sc.pp.normalize_total(adata, target_sum=1e4)
@@ -48,6 +46,6 @@ def run(path, data_name , n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata
+    return adata.obs['mclust'],finaltime, peak
 
 

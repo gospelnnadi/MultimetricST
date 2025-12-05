@@ -32,7 +32,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
 
     This function computes a range of clustering evaluation scores given predicted labels and (optionally) ground truth.
     It supports both standard metrics (e.g., ARI, AMI, silhouette) and spatial transcriptomics-aware metrics such as 
-    spatial silhouette score (SSS), CHAOS, PAS, and ASW. Useful for benchmarking clustering quality in spatial omics.
+    spatial silhouette coefficient (SSC), CHAOS, PAS, and ASW. Useful for benchmarking clustering quality in spatial omics.
 
     Parameters
     ---------- 
@@ -70,9 +70,9 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
             - "Homogeneity"      : Homogeneity score
             - "Completeness"     : Completeness score
             - "V-Measure"        : Harmonic mean of homogeneity and completeness
-            - "SSS"              : Spatial silhouette score (Silhouette_Spatial_Score)
-            - "SSS-Penalty"      : Precomputed spatial penalty (from adata.uns['average_penalty'])
-            - "Silhouette"       : Standard silhouette score (cosine distance)
+            - "SSC              : Spatial silhouette coefficient (form Silhouette_Spatial_Score)
+            - "Average_Dispersion"      : Precomputed spatial penalty (from adata.uns['average_penalty'])
+            - "Silhouette"       : Standard silhouette coefficient (cosine distance)
             - "Davies-Bouldin"   : Davies-Bouldin index (lower is better)
             - "CHAOS"            : Cluster spatial compactness (%)
             - "PAS"              : Preservation of spatial autocorrelation
@@ -83,12 +83,12 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     - CHAOS, PAS, and ASW are custom spatial metrics typically defined in `.utils`.
     - If fewer than 2 predicted clusters are provided, all metrics default to 0.
     - Assumes `adata.obsm['spatial']` is present and contains 2D spatial coordinates for each spot.
-    - Assumes `adata.uns['average_penalty']` is computed by SSS.
+    - Assumes `adata.uns['average_penalty']` is computed by SSC.
 
     Example
     -------
     >>> scores = evaluate_cluster(adata=adata, pred=y_pred, ground_truth=y_true, pca_matrix=pca, is_visium=False)
-    >>> print(scores["ARI"], scores["SSS"], scores["CHAOS"])
+    >>> print(scores["ARI"], scores["SSC], scores["CHAOS"])
     """
 
     # If no PCA matrix is provided, use adata.X (convert from sparse if necessary)
@@ -129,14 +129,14 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
 
     # Compute clustering metrics if at least 2 clusters are present
     if len(np.unique(pred)) > 1:
-        # Spatial silhouette score (custom metric considering spatial info)
+        # Spatial silhouette coefficient (custom metric considering spatial info)
         silhouette_spatial = silhouette_spatial_score(pca_matrix, pred, adata, metric="cosine", is_visium=is_visium)
         silhouette_spatial = np.round(silhouette_spatial, decimal)
 
         # Penalty based on spatial smoothness or inconsistency (precomputed)
         penalty = np.round(adata.uns['average_penalty'], decimal)
 
-        # Standard silhouette score with cosine distance
+        # Standard silhouette coefficient with cosine distance
         silhouette = metrics.silhouette_score(pca_matrix, pred, metric='cosine')
         silhouette = np.round(silhouette, decimal)
 
@@ -176,9 +176,9 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         print("Homogeneity Score: ", homogeneity)
         print("Completeness Score: ", completeness)
         print("V-Measure Score: ", v_measure)
-        print("Silhouette Spatial Score: ", silhouette_spatial)
-        print("SSS average_penalty:", penalty)
-        print("Silhouette Score: ", silhouette)
+        print("Silhouette Spatial Coefficient: ", silhouette_spatial)
+        print("SSC average dispersion:", penalty)
+        print("Silhouette Coefficient: ", silhouette)
         print("Davies Bouldin Index: ", davies_bouldin)
         print("CHAOS: ", chaos)
         print("PAS: ", pas)
@@ -193,7 +193,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         "Completeness": eval_result[4],
         "V-Measure": eval_result[5],
         "Silhouette-Spatial": eval_result[6],
-        "SSS-Penalty": eval_result[7],
+        "Average-Dispersion": eval_result[7],
         "Silhouette": eval_result[8],
         "Davies-Bouldin": eval_result[9],
         "CHAOS": eval_result[10],

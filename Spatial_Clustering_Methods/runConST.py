@@ -109,12 +109,10 @@ params.device = device
 
 
 
-def run(path,data_name , n_clusters=7): 
+def run(adata,data_name,data_type='Visium',n_clusters=7): 
     start_time = time.time()
     tracemalloc.start()
-    path = f"{path}/{data_name}"
-    #path = '/home/accounts/personale/nndgpl46/BertWalk_Vs_SOTA/inputs/2.Mouse_Brain_Anterior'
-    adata = load_ST_file(path, count_file='filtered_feature_bc_matrix.h5')
+    
     adata_X = adata_preprocess(adata, min_cells=5, pca_n_comps=params.cell_feat_dim)
     graph_dict = graph_construction(adata.obsm['spatial'], adata.shape[0], params)
     os.makedirs("./input", exist_ok=True)
@@ -129,8 +127,6 @@ def run(path,data_name , n_clusters=7):
     os.makedirs(save_root, exist_ok=True)
 
     params.save_path = mk_dir(f'{save_root}/{data_name}/conST')
-
-    adata = load_ST_file(path, count_file='filtered_feature_bc_matrix.h5')
 
     adata_X = np.load('./input/adatax.npy')
     graph_dict = np.load('./input/graphdict.npy',  allow_pickle = True).item()
@@ -199,4 +195,4 @@ def run(path,data_name , n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata
+    return adata.obs['refine'],finaltime, peak

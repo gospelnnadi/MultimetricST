@@ -35,20 +35,19 @@ def get_adata(path,  is_h5ad=False):
         
 
 
-def run(path, data_name, n_clusters=7):
+def run(adata ,data_name,data_type='Visium',n_clusters=7):
  
     device =  "cuda" if torch.cuda.is_available() else "cpu"
 
     seed=35
-    data_type='Visium'
+    data_type=data_type
     refinement=True
-    is_h5ad=False
-    adata=get_adata(f'{path}/{data_name}', is_h5ad=False) 
-    print(adata)
+    adata_raw=adata.copy()
 
     # Start measuring time and memory
     start_time = time.time()
     tracemalloc.start()
+    
 
     GISTModel=GIST(adata=adata,  device=device, random_seed=seed, data_type=data_type)
     adata=GISTModel.train()
@@ -65,10 +64,15 @@ def run(path, data_name, n_clusters=7):
     print(f"Peak memory usage: {peak} MB")  
 
     cluster_n_plot(adata, f"outputs/{data_name}.png", n_clusters,refinement=refinement, seed=seed, is_visium=GISTModel.is_visium)
+    # Isolated spots are not considered in the clustering. If necessary copy the cluster label in the raw adata 
+    adata_raw.obs['cluster']='-1'
+    common = adata.obs_names.intersection(adata_raw.obs_names)
+    adata_raw.obs.loc[common, 'cluster'] = adata.obs.loc[common, 'cluster'].values
+    adata_raw.uns['GIST_emb']=adata.obsm['GIST_emb']
     
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata
+    return adata_raw.obs['cluster'],finaltime, peak
     
 

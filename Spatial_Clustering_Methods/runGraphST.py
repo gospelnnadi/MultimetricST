@@ -18,14 +18,13 @@ import tracemalloc
 # Start measuring time and memory
 
 
-def run(path, data_name , n_clusters=7): 
+def run(adata ,data_name,data_type='Visium',n_clusters=7): 
     start_time = time.time()
     tracemalloc.start()
     device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
-    adata = sc.read_visium(f"{path}/{data_name}", count_file='filtered_feature_bc_matrix.h5', load_images=True)
-    adata.var_names_make_unique()
+
     # define model
-    model = GraphST.GraphST(adata, device=device)
+    model = GraphST.GraphST(adata, device=device,datatype=data_type)
 
     # train model
     adata = model.train()
@@ -53,5 +52,5 @@ def run(path, data_name , n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata  
+    return adata.obs['domain'],finaltime, peak
 

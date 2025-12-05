@@ -1,8 +1,8 @@
 
 
 from sklearn.decomposition import PCA
-from multimetricST.evaluate import evaluate_cluster
-from multimetricST.utils import *
+from Evaluate.evaluate import evaluate_cluster
+from Evaluate.utils import *
 
 import warnings
 import anndata as ad

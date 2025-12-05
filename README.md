@@ -46,6 +46,8 @@ Visualize dashboard run ipynb script:
 
 Note: To run the SpaceFlow method from the downloaded repo, the code In Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py line 132 need to use defualt flavour.  sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, flavor='cell_ranger', subset=True) -> sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, subset=True)
 
+Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py line 52
+
 ### Data Availability ###
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/17167458
 
