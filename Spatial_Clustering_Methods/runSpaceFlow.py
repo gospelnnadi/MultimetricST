@@ -70,11 +70,11 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     sc.pp.neighbors(adata, n_neighbors=50)
     eval_resolution = res_search_fixed_clus(adata, n_clusters)
 
-    sf.segmentation(domain_label_save_filepath="./dlpfc/dlpfc_domains_{}.csv", 
+    sf.segmentation(domain_label_save_filepath="../dlpfc/dlpfc_domains_{}.csv", 
                 n_neighbors=50, 
                 resolution=eval_resolution)
 
-    sf.plot_segmentation(segmentation_figure_save_filepath="./dlpfc/dlpfc_domain_segmentation_{}.pdf", 
+    sf.plot_segmentation(segmentation_figure_save_filepath="../dlpfc/dlpfc_domain_segmentation_{}.pdf", 
                      colormap="tab20", 
                      scatter_sz=1., 
                      rsz=4., 
@@ -86,7 +86,7 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
                      bottom=0.1, 
                      top=0.9)
     
-    pred=pd.read_csv('./dlpfc/dlpfc_domains_{}.csv',header=None)
+    pred=pd.read_csv('../dlpfc/dlpfc_domains_{}.csv',header=None)
     pred_list=pred.iloc[:,0].to_list()
     adata.obs['SpaceFlow_refine_domain'] = pred_list
 

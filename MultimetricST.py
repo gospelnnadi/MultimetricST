@@ -212,7 +212,7 @@ def main(args):
         data_name=args.data_name
     print("adata_raw dim", adata_raw.shape)
     if os.path.exists(args.ground_truth):
-        ground_truth=load_from_file_csv_tsv_npy(args,args.ground_truth, args.ground_truth_col_names)
+        ground_truth=load_from_file_csv_tsv_npy(args,args.ground_truth, args.ground_truth_col_name)
         print("gound_truth dim", ground_truth.shape)
         # Handle different possible data types (NumPy array or pandas DataFrame/Series)
         if isinstance(ground_truth, (pd.DataFrame, pd.Series)):
@@ -229,16 +229,19 @@ def main(args):
     if args.mode == 1:
         print("Running Mode 1: Full pipeline")
         run_full_pipeline(args,adata_raw,data_name,data_type=args.data_type,n_clusters=args.n_clusters)
+        print("Full pipeline completed.")
     
     # Mode 2: Evaluation and visualization only
     elif args.mode == 2:
         print("Running Mode 2: Evaluation and visualization")
         run_evaluation_and_visualization(args,adata_raw,data_name)
+        print("Evaluation and visualization completed.")
     
     # Mode 3: Visualization only from precomputed scores
     elif args.mode == 3:
         print("Running Mode 3: Visualization from precomputed scores")
         run_visualization_only(args,adata_raw,data_name)
+        print("Visualization completed.")
 
 
 
@@ -285,7 +288,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
         else:
             is_visium=False
         results=[]
-        
+        print("Evaluating clustering results...")
         for m in comp_cost:
             method=m['method']
             # Clusters from adata
@@ -309,11 +312,11 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
                 adata.obs[col] = adata.obs[col].astype(str)
         os.makedirs("Data/Preprocessed", exist_ok=True)
         adata.write_h5ad(f"Data/Preprocessed/{data_name}.h5ad")
+        print("Clustering and evaluation results saved.")
 
-
-
+        print("Running dashboard visualization...")
         # Run dashboard visualization
-        #run_dashboard(result_savepath, plot_savepath )
+        run_dashboard(result_savepath, plot_savepath )
  
 
     except Exception as e:
@@ -370,7 +373,7 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         else:
             is_visium=False
         results=[]
-       
+        print("Evaluating clustering results...")
         for method in args.method_cluster_label:
             if method not in adata_raw.obs:
                 print(f"Warning: Method {method} not found in adata.obs. Skipping evaluation and plot.")
@@ -393,7 +396,8 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
         results_df.to_csv(result_savepath,  index=False)
 
-
+        print("Evaluation results saved.")
+        print("Running dashboard visualization...")
         # Run dashboard visualization
         run_dashboard(result_savepath, plot_savepath )
         
@@ -447,7 +451,7 @@ def run_visualization_only(args,adata_raw,data_name):
         # Convert to DataFrame
         
         #result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
-
+        print("Running dashboard visualization...")
         # Run dashboard visualization
         run_dashboard(args.result_savepath, plot_savepath )
 
@@ -528,7 +532,7 @@ if __name__ == '__main__':
     parser.add_argument("--ground_truth", type=str, default="ground_truth",
                        help="if the groundtruth annotation is in the anndata specify the anndata.obs key ground_truth. Otherwise, provide the path to the annotation tsv or csv file. " \
                        "If file or obs key not exist Annotation-Dependent evaluation metrics will not be used")
-    parser.add_argument("--ground_truth_col_names",nargs='+', default=["layer_guess"], 
+    parser.add_argument("--ground_truth_col_name",nargs='+', default=["layer_guess"], 
                        help="if the path to the annotation tsv or csv file is provided, indicate the column indice where the ground-truth annotation is found. For DLPFC data, it is layer_guess")
     
     # Cluster labels input (for modes 2 and 3)

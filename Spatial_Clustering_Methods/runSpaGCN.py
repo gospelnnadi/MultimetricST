@@ -70,11 +70,11 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
 
     #If histlogy image is not available, SpaGCN can calculate the adjacent matrix using the fnction below
     adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
-    np.savetxt(f'./adj.csv', adj, delimiter=',')
+    np.savetxt(f'../adj.csv', adj, delimiter=',')
     #spatial domain detection using SpaGCN
 
     #expression data preprocessing
-    adj=np.loadtxt(f'./adj.csv', delimiter=',')
+    adj=np.loadtxt(f'../adj.csv', delimiter=',')
 
     #set hyper-parameters
     p=0.5 

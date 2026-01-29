@@ -48,17 +48,21 @@ from runSpaceFlow import run as runSpaceFlow
 import pandas as pd
 import numpy as np
 
-methods = [
-    ("DeepST", runDeepST),
-    ("GraphST", runGraphST), 
-    ("GIST", runGIST), 
-    ("SEDR", runSEDR),
-    ("SpaGCN", runSpaGCN), 
-    ("STAGATE", runSTAGATE), 
-    ("SCAN-IT", runScanIT), 
+""" ("DeepST", runDeepST) ,
     ("CCST", runCCST),
     ("conST", runConST),
-    ("SpaceFlow", runSpaceFlow),
+    ("GIST", runGIST), 
+    ("GraphST", runGraphST), 
+    ("SCAN-IT", runScanIT), 
+    ("SEDR", runSEDR),
+    ("SpaceFlow", runSpaceFlow) 
+    ("SpaGCN", runSpaGCN), 
+    ("STAGATE", runSTAGATE) 
+    """
+methods = [ 
+   
+    
+    ("GIST", runGIST) 
 ]
 comp_cost = []
 def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7):
@@ -72,4 +76,5 @@ def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7)
         "peak_memory": peak_mem
     }
     comp_cost.append(result)
+  print("\n\nAll methods have been executed.\n\n")
   return adata_raw, comp_cost

@@ -21,9 +21,9 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7,use_morphological=False
     SEED = 0   
     dt.utils_func.seed_torch(seed=SEED)
 
-    #data_name = '2.Mouse_Brain_Anterior' #### project name
+   
     save_path = "../Results" #### save path
-    #n_clusters = 52 ###### the number of spatial domains.
+  
 
     """  deepen = run(save_path = save_path,
 	  task = "Identify_Domain", #### DeepST includes two tasks, one is "Identify_Domain" and the other is "Integration"
@@ -31,7 +31,7 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7,use_morphological=False
 	  epochs = 1000, #### choose the number of training
 	  use_gpu = False) """
     deepen = dt.main.run(
-    #save_path=save_path,
+    save_path=save_path,
     task="Identify_Domain",  # Spatial domain identification
     pre_epochs=500,          # Pretraining iterations
     epochs=500,              # Main training iterations

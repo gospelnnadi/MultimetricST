@@ -164,14 +164,14 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     parser.add_argument( '--Dim_PCA', type=int, default=200, help='The output dimention of PCA')
     #parser.add_argument( '--data_path', type=str, default='dataset/', help='The path to dataset')
     parser.add_argument( '--data_name', type=str, default='151673', help='The name of dataset')
-    parser.add_argument( '--generated_data_path', type=str, default='generated_data/', help='The folder to store the generated data')
+    parser.add_argument( '--generated_data_path', type=str, default='../generated_data/', help='The folder to store the generated data')
 
     # =========================== args ===============================
     #parser.add_argument( '--data_name', type=str, default='151673', help="'MERFISH' or 'V1_Breast_Cancer_Block_A_Section_1") 
     parser.add_argument( '--lambda_I', type=float, default=0.3) #0.3 on 10x visium, 0.8 on other technology
-    parser.add_argument( '--data_path', type=str, default='generated_data/', help='data path')
-    parser.add_argument( '--model_path', type=str, default='model') 
-    parser.add_argument( '--embedding_data_path', type=str, default='Embedding_data') 
+    parser.add_argument( '--data_path', type=str, default='../generated_data/', help='data path')
+    parser.add_argument( '--model_path', type=str, default='../model') 
+    parser.add_argument( '--embedding_data_path', type=str, default='../Embedding_data') 
     parser.add_argument( '--result_path', type=str, default='results') 
     parser.add_argument( '--DGI', type=int, default=1, help='run Deep Graph Infomax(DGI) model, otherwise direct load embeddings')
     parser.add_argument( '--load', type=int, default=0, help='Load pretrained DGI model')
@@ -187,7 +187,7 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     print(adata)
     args.data_name=data_name
 
-    data_fold = args.data_path+args.data_name+'/'
+    
     generated_data_fold = args.generated_data_path + args.data_name+'/'
     if not os.path.exists(generated_data_fold):
         os.makedirs(generated_data_fold)

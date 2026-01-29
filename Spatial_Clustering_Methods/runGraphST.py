@@ -42,7 +42,8 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     radius = 50
 
     tool = 'mclust' # mclust, leiden, and louvain
-
+    print (f"Clustering using {tool}...")
+    print("Dimension of Adata:",adata.obsm["emb"].shape)
     if tool == 'mclust':
         clustering(adata, n_clusters, radius=radius, method=tool, refinement=True) # For DLPFC dataset, we use optional refinement step.
     elif tool in ['leiden', 'louvain']:

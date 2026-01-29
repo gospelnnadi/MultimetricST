@@ -63,7 +63,7 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     print(f"Current memory usage: {current} MB")
     print(f"Peak memory usage: {peak} MB")  
 
-    cluster_n_plot(adata, f"outputs/{data_name}.png", n_clusters,refinement=refinement, seed=seed, is_visium=GISTModel.is_visium)
+    cluster_n_plot(adata, f"../outputs/{data_name}.png", n_clusters,refinement=refinement, seed=seed, is_visium=GISTModel.is_visium)
     # Isolated spots are not considered in the clustering. If necessary copy the cluster label in the raw adata 
     adata_raw.obs['cluster']='-1'
     common = adata.obs_names.intersection(adata_raw.obs_names)

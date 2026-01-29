@@ -5,7 +5,11 @@ figures
 generated_data
 image_crop
 MAE-pytorch
-multimetricsST_output
+embedding.tsv
+results
+output
+adj.csv
+multimetricsST_output/*
 Spatial_Clustering_Methods_old
 Spatial_Clustering_Methods/__pycache__
 Visualize_Scores/__pycache__
@@ -21,6 +25,6 @@ Spatial_Clustering_Methods/SpaceFlow
 Spatial_Clustering_Methods/SpaGCN
 Spatial_Clustering_Methods/STAGATE_pyG
 Spatial_Clustering_Methods/cluster_method_packages.txt
-outputs
+outputs/*
 slurm_exec.sh
-
+README copy

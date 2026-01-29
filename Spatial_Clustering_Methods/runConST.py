@@ -115,25 +115,25 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     
     adata_X = adata_preprocess(adata, min_cells=5, pca_n_comps=params.cell_feat_dim)
     graph_dict = graph_construction(adata.obsm['spatial'], adata.shape[0], params)
-    os.makedirs("./input", exist_ok=True)
-    np.save('./input/adatax.npy', adata_X)
-    np.save('./input/graphdict.npy', graph_dict, allow_pickle = True)
-    os.makedirs("./MAE-pytorch", exist_ok=True)
+    os.makedirs("../input", exist_ok=True)
+    np.save('../input/adatax.npy', adata_X)
+    np.save('../input/graphdict.npy', graph_dict, allow_pickle = True)
+    os.makedirs("../MAE-pytorch", exist_ok=True)
 
     seed_torch(params.seed)
 
 
-    save_root = f'./output/DLPFC/{data_name}/'
+    save_root = f'../output/DLPFC/{data_name}/'
     os.makedirs(save_root, exist_ok=True)
 
     params.save_path = mk_dir(f'{save_root}/{data_name}/conST')
 
-    adata_X = np.load('./input/adatax.npy')
-    graph_dict = np.load('./input/graphdict.npy',  allow_pickle = True).item()
+    adata_X = np.load('../input/adatax.npy')
+    graph_dict = np.load('../input/graphdict.npy',  allow_pickle = True).item()
     params.cell_num = adata.shape[0]
 
     if params.use_img:
-        img_transformed = np.load('./MAE-pytorch/extracted_feature.npy')
+        img_transformed = np.load('../MAE-pytorch/extracted_feature.npy')
         img_transformed = (img_transformed - img_transformed.mean()) / img_transformed.std() * adata_X.std() + adata_X.mean()
         conST_net = conST_training(adata_X, graph_dict, params, n_clusters, img_transformed)
     else:

@@ -55,11 +55,11 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     ndf,ninfo = som.mtx(df_sp.T)
     nres = som.norm()
     result, SVnum =som.run()
-    result.to_csv(f'./somde_result.csv')
+    result.to_csv(f'../somde_result.csv')
 
     n_sv_genes = 3000
     sc.pp.normalize_total(adata)
-    df_somde = pd.read_csv(f'./somde_result.csv')
+    df_somde = pd.read_csv(f'../somde_result.csv')
     sv_genes = list( df_somde['g'].values[:n_sv_genes] )
     adata = adata[:, sv_genes]
     sc.pp.log1p(adata)
