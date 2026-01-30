@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 from pathlib import Path
  #SOMDE
 from somde import SomNode
+from scipy.sparse import issparse
 import time
 import tracemalloc
 # Start measuring time and memory
@@ -48,7 +49,11 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     tracemalloc.start()
    
     pts = adata.obsm['spatial']
-    df_sp = pd.DataFrame(data=adata.X.toarray(), columns=list(adata.var_names))
+    if issparse(adata.X):
+             df_sp = pd.DataFrame(data=adata.X.toarray(), columns=list(adata.var_names))
+    else:
+             df_sp = pd.DataFrame(data=adata.X, columns=list(adata.var_names))
+   
     
     som = SomNode(pts, 5)
 
