@@ -264,15 +264,15 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
         # Run evaluation and get scores
         adata_raw = preprocess(adata_raw, n_components=n_components, random_seed=random_seed)
 
-        # Keep only spots present in adata
+        """ # Keep only spots present in adata
         common_idx = adata_raw.obs_names.intersection(adata.obs_names)
         adata_raw = adata_raw[common_idx].copy()
         adata = adata[common_idx].copy()
-        
+         """
         plot_savepath=f"{ROOT}/multimetricST_outputs/figures/{data_name}/"
         os.makedirs(plot_savepath, exist_ok=True)
         if 'ground_truth' in adata_raw.obs:
-            ground_truth =adata.obs['ground_truth'] 
+            ground_truth =adata_raw.obs['ground_truth'] 
             print("gound truth was detcted in anndata and will be used for evaluation")
             method='ground_truth'
             print(f"Saving {method} cluster plot to {plot_savepath}")
@@ -293,9 +293,11 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
             method=m['method']
             # Clusters from adata
             pred = adata.obs[method]
+            # Keep only spots present in adata
+
             scores=evaluate_cluster( adata_raw,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
             
-                # Merge metrics and computational cost into one record
+            # Merge metrics and computational cost into one record
             m.update(scores)
 
             # Append to list

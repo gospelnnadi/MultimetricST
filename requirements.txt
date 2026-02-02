@@ -19,8 +19,9 @@ mkl-fft==1.3.6
 mkl-random==1.2.2
 mkl-service==2.5.2
 networkx==2.8.8
-numpy #==1.24.4
-pandas==2.3.2
+numpy==1.24.4
+#pandas==2.3.2
+pandas==2.3.3
 panel==1.8.2
 plotly==6.3.0
 pot==0.9.4
@@ -28,10 +29,11 @@ progress==1.6.1
 pylib-openblas==0.0.2
 rpy2==3.5.17
 scanpy==1.10.3
-#scikit-learn==1.1.2
 scikit-learn==1.3.2
 scikit-misc==0.3.1
-scipy<1.10
+seaborn==0.13.2  
+scipy==1.9.3 
+#somoclu==1.7.5
 somde==0.1.8
 SpaGCN==1.2.7
 statsmodels>=0.14

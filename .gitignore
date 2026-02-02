@@ -1,4 +1,4 @@
-Data
+Data/*
 dlpfc
 Embedding_data
 figures
@@ -26,5 +26,5 @@ Spatial_Clustering_Methods/SpaGCN
 Spatial_Clustering_Methods/STAGATE_pyG
 Spatial_Clustering_Methods/cluster_method_packages.txt
 outputs/*
-slurm_exec.sh
-README copy
+run_bash1.ipynb
+slurm_exec_mmst1.sh

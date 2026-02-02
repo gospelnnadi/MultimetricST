@@ -43,7 +43,7 @@ python MultimetricST.py \
   --ground_truth Data/DLPFC/151673/metadata.tsv\
   --ground_truth_col_name layer_guess \
   --data_name 151673 \
-  --n_clusters 7 &> outputs/multimetricst_mode1.log
+  --n_clusters 7 &> outputs/multimetricst_mode1.log &
 
 
 Example 2: Visium data stored as .h5ad
@@ -53,7 +53,7 @@ python MultimetricST.py \
   --ground_truth ground_truth \
   --is_h5ad 1 \
   --data_name Axolotl_Brain \
-  --n_clusters 8 &> outputs/multimetricst_mode1.log
+  --n_clusters 8 > outputs/multimetricst_mode1.log &
 
 
 This command:
@@ -92,14 +92,14 @@ Example 3: Evaluate cluster labels stored in adata.obs
 python MultimetricST.py \
   --mode 2 \
   --data_path Data/DLPFC/151673 \
-  --method_cluster_label GraphST SEDR SpaceFlow &> outputs/multimetricst_mode2.log
-
+  --method_cluster_label GraphST SEDR SpaceFlow > outputs/multimetricst_mode2.log &
+ 
 Example 4: Evaluate cluster labels from CSV file
 python MultimetricST.py \
   --mode 2 \
   --data_path Data/DLPFC/151673 \
   --cluster_label_path clustering_labels.csv \
-  --cluster_label_col_names GIST GraphST SEDR &> outputs/multimetricst_mode2.log
+  --cluster_label_col_names GIST GraphST SEDR > outputs/multimetricst_mode2.log &
 
 
 ### Mode 3 – Visualization only
@@ -117,7 +117,7 @@ Mode 3 – Visualization Only Examples
 Example 5: Visualize precomputed evaluation results
 python MultimetricST.py \
   --mode 3 \
-  --result_savepath clustering_results.csv
+  --result_savepath clustering_results.csv  > outputs/multimetricst_mode3.log &
 
 Example 6: Visualization with spatial plots
 python MultimetricST.py \
@@ -125,7 +125,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --result_savepath clustering_results.csv \
   --cluster_label_path clustering_labels.csv \
-  --cluster_label_col_names GraphST SEDR
+  --cluster_label_col_names GraphST SEDR  > outputs/multimetricst_mode3.log &
 
 
 ## Dashboard
@@ -161,9 +161,9 @@ If ground truth is not available, annotation-dependent metrics are skipped autom
 ## Output Files
 All outputs are stored under:
 
-multimetricST_outputs/
-├── clustering_results.csv
-└── figures/<dataset_name>/<method_name>.png
+
+multimetricST_outputs/clustering_results.csv
+multimetricST_outputs/figures/<dataset_name>/<method_name>.png
 
 
 ### Notes on Method Execution

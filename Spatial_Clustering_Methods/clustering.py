@@ -48,9 +48,7 @@ from runSpaceFlow import run as runSpaceFlow
 import pandas as pd
 import numpy as np
 
-
-methods = [ 
-   ("DeepST", runDeepST) ,
+"""   ("DeepST", runDeepST) ,
     ("CCST", runCCST),
     ("conST", runConST),
     ("GIST", runGIST), 
@@ -59,7 +57,12 @@ methods = [
     ("SEDR", runSEDR),
     ("SpaceFlow", runSpaceFlow) ,
     ("SpaGCN", runSpaGCN), 
-    ("STAGATE", runSTAGATE) 
+    ("STAGATE", runSTAGATE)  """
+methods = [ 
+    ("CCST", runCCST),
+    ("conST", runConST),
+    ("GIST", runGIST) 
+   
 ]
 comp_cost = []
 def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7):

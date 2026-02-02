@@ -29,27 +29,32 @@ These components can be executed **independently or sequentially** via a single 
 
 # setup
 
-install requirements for python==3.10.0
+
+
+Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) environment
+`````
+conda create -n MMST -y
+
+`````
+`````
+conda activate MMST  
+
+`````
+`````
+conda install python=3.10.0 r-base=4.3.1 somoclu=1.7.5 -y 
+
+`````
+Note: [somoclu](https://teams.microsoft.com/l/message/19:6c02e0c9-6049-49df-a347-cb911311bea2_b108c7f4-b600-47f3-ad99-3d06ca49a583@unq.gbl.spaces/1770039026850?context=%7B%22contextType%22%3A%22chat%22%7D) only supported on macOS and linux platforms. The spatial domain identification method ScanIT depends on somde which uses somoclu.
+
+install requirements 
 ````
 pip install -r requirements.txt
-
 ````
 install MultimetricST package
 ````
 pip install git+https://github.com/InfOmics/MultimetricST.git
 ````
 
-
-Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) environment
-`````
-conda create -n MMST2 python==3.10.0 r-base==4.3.1 seaborn=0.13.2  scipy==1.9.3 somoclu==1.7.5  gcc -y
-conda activate MMST  
-
-`````
-install requirements 
-````
-pip install -r requirements.txt
-````
 
 install pytorch libraries
 ````
@@ -94,7 +99,7 @@ Each mode requires a different set of input data, consistent with the manuscript
 ### Data Availability ###
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/17167458
 
-Download the DLPFC 151673 data used in Clustering_Tutorial.py :
+Download the DLPFC 151673 data:
         wget https://zenodo.org/records/17167458/files/Data.zip
 
 For detailed command-line usage and dataset-specific examples, see [View Usage Documentation](USAGE.md).

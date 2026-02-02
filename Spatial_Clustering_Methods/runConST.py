@@ -176,14 +176,6 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     savepath = f'{params.save_path}/conST_leiden_plot.jpg'
     plot_clustering(adata_conST, cluster_key, savepath = savepath)
 
-    #df_meta = pd.read_csv(f'{data_root}/{data_name}/metadata.tsv', sep='\t')
-    #df_meta['conST'] = adata_conST.obs[cluster_key].tolist()
-    """ df_meta.to_csv(f'{params.save_path}/metadata.tsv', sep='\t', index=False)
-    df_meta = df_meta[~pd.isnull(df_meta['layer_guess'])]
-    ARI = metrics.adjusted_rand_score(df_meta['layer_guess'], df_meta['conST'])
-    print('===== Project: {} ARI score: {:.3f}'.format(data_name, ARI)) """
-
-
     index = np.arange(start=0, stop=adata_X.shape[0]).tolist()
     index = [str(x) for x in index]
 
