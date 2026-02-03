@@ -295,7 +295,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
             pred = adata.obs[method]
             # Keep only spots present in adata
 
-            scores=evaluate_cluster( adata_raw,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
+            scores=evaluate_cluster( adata_raw,pred.astype(int), ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
             
             # Merge metrics and computational cost into one record
             m.update(scores)

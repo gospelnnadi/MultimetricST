@@ -61,7 +61,8 @@ import numpy as np
 methods = [ 
     ("CCST", runCCST),
     ("conST", runConST),
-    ("GIST", runGIST) 
+    ("GIST", runGIST),
+    ("GraphST", runGraphST)
    
 ]
 comp_cost = []

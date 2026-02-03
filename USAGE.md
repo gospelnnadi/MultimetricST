@@ -25,48 +25,44 @@ Required
 
 AnnData object containing:
 
-raw expression matrix
+- raw expression matrix
 
-spatial coordinates
+- spatial coordinates
 
-optional tissue image
+- optional tissue image
 
-optional ground-truth annotations
+- optional ground-truth annotations
 
 
 
-Mode 1 – Full Pipeline Examples
-Example 1: DLPFC Visium dataset (as used in the paper)
-python MultimetricST.py \
-  --mode 1 \
-  --data_path Data/DLPFC/151673 \
-  --ground_truth Data/DLPFC/151673/metadata.tsv\
-  --ground_truth_col_name layer_guess \
-  --data_name 151673 \
-  --n_clusters 7 &> outputs/multimetricst_mode1.log &
+Mode 1 – Full Pipeline Examples. 
+
+Example 1: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
+Execute the following command.
+
+python MultimetricST.py \\<br>
+  --mode 1 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess \\<br>
+  --data_name 151673 \\<br>
+  --n_clusters 7 > outputs/multimetricst_mode1.log &
 
 
 Example 2: Visium data stored as .h5ad
-python MultimetricST.py \
-  --mode 1 \
-  --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad\
-  --ground_truth ground_truth \
-  --is_h5ad 1 \
-  --data_name Axolotl_Brain \
+
+python MultimetricST.py \\<br>
+  --mode 1\\<br> 
+  --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad \\<br>
+  --ground_truth ground_truth \\<br>
+  --is_h5ad 1 \\<br>
+  --data_name Axolotl_Brain \\<br>
   --n_clusters 8 > outputs/multimetricst_mode1.log &
 
 
 This command:
 
-clones all method repositories,
-
-executes spatial domain identification methods,
-
-evaluates clustering performance,
-
-generates spatial plots,
-
-launches the interactive dashboard.
+clones all method repositories, executes spatial domain identification methods, evaluates clustering performance, generates spatial plots, launches the interactive dashboard.
 
 ###  Mode 2 – Evaluation + visualization
 
@@ -74,31 +70,33 @@ Required
 
 AnnData object containing:
 
-raw expression matrix
+- raw expression matrix
 
-spatial coordinates
+- spatial coordinates
 
-cluster labels
+- cluster labels
 
-optional ground-truth annotations
+- optional ground-truth annotations
 
 OR
 
-External cluster label files (CSV / TSV / NPY)
+- External cluster label files (CSV / TSV / NPY)
 
 
 Mode 2 – Evaluation + Visualization Examples
 Example 3: Evaluate cluster labels stored in adata.obs
-python MultimetricST.py \
-  --mode 2 \
-  --data_path Data/DLPFC/151673 \
+
+python MultimetricST.py \\<br>
+  --mode 2 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
   --method_cluster_label GraphST SEDR SpaceFlow > outputs/multimetricst_mode2.log &
  
 Example 4: Evaluate cluster labels from CSV file
-python MultimetricST.py \
-  --mode 2 \
-  --data_path Data/DLPFC/151673 \
-  --cluster_label_path clustering_labels.csv \
+
+python MultimetricST.py \\<br>
+  --mode 2 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
+  --cluster_label_path clustering_labels.csv \\<br>
   --cluster_label_col_names GIST GraphST SEDR > outputs/multimetricst_mode2.log &
 
 
@@ -106,25 +104,27 @@ python MultimetricST.py \
 
 Required
 
-CSV file with precomputed evaluation scores
+- CSV file with precomputed evaluation scores
 
 Optional
 
-AnnData object or spatial matrix for spatial visualization
+- AnnData object or spatial matrix for spatial visualization
 
 
 Mode 3 – Visualization Only Examples
 Example 5: Visualize precomputed evaluation results
-python MultimetricST.py \
-  --mode 3 \
+
+python MultimetricST.py \\<br>
+  --mode 3 \\<br>
   --result_savepath clustering_results.csv  > outputs/multimetricst_mode3.log &
 
 Example 6: Visualization with spatial plots
-python MultimetricST.py \
-  --mode 3 \
-  --data_path Data/DLPFC/151673 \
-  --result_savepath clustering_results.csv \
-  --cluster_label_path clustering_labels.csv \
+
+python MultimetricST.py \\<br>
+  --mode 3 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
+  --result_savepath clustering_results.csv \\<br>
+  --cluster_label_path clustering_labels.csv \\<br>
   --cluster_label_col_names GraphST SEDR  > outputs/multimetricst_mode3.log &
 
 
@@ -132,13 +132,13 @@ python MultimetricST.py \
 
 The interactive dashboard:
 
-summarizes metrics by category,
+- summarizes metrics by category,
 
-visualizes spatial clusters,
+- visualizes spatial clusters,
 
-highlights top-performing methods,
+- highlights top-performing methods,
 
-compares computational efficiency (time & memory).
+- compares computational efficiency (time & memory).
 
 It is implemented using Panel and Plotly and is launched automatically when applicable.
 
@@ -147,9 +147,9 @@ It is implemented using Panel and Plotly and is launched automatically when appl
 
 Ground truth can be provided as:
 
-an adata.obs key, or
+- an adata.obs key, or
 
-an external CSV / TSV file
+- an external CSV / TSV file
 
 Example:
 
@@ -174,9 +174,9 @@ Runtime and memory usage are recorded for each method
 
 New Python-based methods can be added by:
 
-adding the GitHub URL to Spatial_Clustering_Methods/repos_git.txt
+- adding the GitHub URL to Spatial_Clustering_Methods/repos_git.txt
 
-implementing a method-specific run function
+- implementing a method-specific run function
 
 ### Known Compatibility Notes
 
