@@ -164,6 +164,39 @@ def validate_arguments(args):
         print(f"Error: Invalid mode {args.mode}. Mode must be 1, 2, or 3.")
 
 
+def log_print(mode):
+    import os
+    import sys
+    import logging
+
+    log_dir = f"{ROOT}/logs"
+    os.makedirs(log_dir, exist_ok=True)
+    log_file = f"{log_dir}/multimetricst_mode{mode}.log"
+
+    # Configure logging
+    logging.basicConfig(
+        level=logging.INFO,
+        format="%(asctime)s | %(levelname)s | %(message)s",
+        handlers=[
+        logging.FileHandler(log_file),
+        logging.StreamHandler(sys.stdout)  # still prints to console
+        ]
+    )
+
+    # Redirect print statements to logging
+    class PrintLogger:
+        def write(self, message):
+            message = message.strip()
+            if message:
+                logging.info(message)
+        def flush(self):
+            pass
+
+    sys.stdout = PrintLogger()
+    sys.stderr = PrintLogger()
+
+
+
 import argparse
 import os
 import sys
@@ -172,7 +205,7 @@ def main(args):
     """
     Main function that orchestrates the three modes of operation based on user input.
     """
-    
+    log_print(args.mode)
     # Validate input parameters based on mode
     if not validate_arguments(args):
         return

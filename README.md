@@ -34,6 +34,7 @@ install MultimetricST package.
 ````
 git clone https://github.com/InfOmics/MultimetricST.git
 cd ~/MultimetricST
+mkdir logs
 ````
 
 Download packages of the spatial transcriptomics spatial domain identification methods to be evaluated described in the paper.
@@ -139,10 +140,10 @@ to be commented in order to use the r-base in the conda environment
 
 
 ### Data Availability ###
-The spatial transcriptomics datasets are available at:  https://zenodo.org/records/17167458
+The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
 
 Download the DLPFC 151673 data:
-        wget https://zenodo.org/records/17167458/files/Data.zip
+        wget https://zenodo.org/records/18482658/files/Data.zip
 
         unzip Data.zip
 

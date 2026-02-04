@@ -161,13 +161,6 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         silhouette_spatial, silhouette, davies_bouldin, chaos, pas, ASW = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
         print("Cluster size is less than 2")
 
-    # Combine all results into a list
-    """ eval_result = [
-        ARI, AMI, purity, homogeneity, completeness, v_measure,
-        silhouette_spatial, penalty, silhouette, davies_bouldin,
-        chaos, pas, ASW
-    ] """
-
     # Print metrics if verbose mode is on
     if verbose:
         print('ARI: ', ARI)
@@ -185,21 +178,6 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         print("ASW: ", ASW)
 
     # Construct and return a dictionary of metrics
-    """  metrics_dict = {
-        "ARI": eval_result[0],
-        "AMI": eval_result[1],
-        "Purity": eval_result[2],
-        "Homogeneity": eval_result[3],
-        "Completeness": eval_result[4],
-        "V-Measure": eval_result[5],
-        "Silhouette-Spatial": eval_result[6],
-        "Average-Dispersion": eval_result[7],
-        "Silhouette": eval_result[8],
-        "Davies-Bouldin": eval_result[9],
-        "CHAOS": eval_result[10],
-        "PAS": eval_result[11],
-        "ASW": eval_result[12]
-    } """
     metrics_dict = {
         "ARI": ARI,
         "AMI":  AMI, 
