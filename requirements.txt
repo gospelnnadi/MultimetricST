@@ -35,15 +35,6 @@ somde==0.1.8
 SpaGCN==1.2.7
 statsmodels>=0.14
 squidpy==1.6.1
-torch==2.1.0 
-torch_sparse -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
-torch_scatter -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
-torch_cluster -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
-torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
-torch-geometric
-torchaudio #==2.1.0
-torchvision #==0.18.0
-triton==2.1.0
 tqdm==4.67.1
 git+https://github.com/InfOmics/spatial_ss.git
 pyproj>=3.5

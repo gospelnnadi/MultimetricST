@@ -8,10 +8,6 @@ from Evaluate.evaluate import evaluate_cluster
 from Evaluate.utils import *
 
 
-#path=f"/home/accounts/personale/nndgpl46/MultimetricST/Data/DLPFC"
-#data_name="151673"
-
-
 
 
 import sys, os
@@ -54,6 +50,7 @@ def get_adata_from_exp_spatial_path(mode, expression_path, spatial_path):
         adata = ad.AnnData(X=exp_matrix)
         adata.obsm["spatial"] = spatial_matrix
         adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
+        adata.var_names_make_unique()
     return adata
 
 
@@ -166,32 +163,6 @@ def validate_arguments(args):
     else:
         print(f"Error: Invalid mode {args.mode}. Mode must be 1, 2, or 3.")
 
-import subprocess
-import os
-
-def download_repo():
-    target_dir = f"{ROOT}/Spatial_Clustering_Methods"
-    os.makedirs(target_dir, exist_ok=True)  # ensure target directory exists
-
-    repos_file = os.path.join(target_dir, "repos_git.txt")
-
-    # Read repo URLs from file (one per line)
-    with open(repos_file, "r") as f:
-        repos = [line.strip() for line in f if line.strip()]
-
-    for repo in repos:
-        repo_name = os.path.splitext(os.path.basename(repo))[0]
-        repo_path = os.path.join(target_dir, repo_name)
-
-        if os.path.exists(repo_path):
-            print(f"✅ Skipping {repo_name} (already exists)")
-            continue
-
-        print(f"⬇️ Cloning {repo} into {repo_path} ...")
-        subprocess.run(["git", "clone", "--depth", "1", repo, repo_path], check=True)
-    
-    print("✨ All repositories processed!")
-
 
 import argparse
 import os
@@ -251,7 +222,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
     """
     try:
         # Import and run clustering module
-        download_repo()
+       
         from Spatial_Clustering_Methods.clustering import run_clustering_pipeline
         print("Running clustering pipeline...")
         
@@ -262,7 +233,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
         from Evaluate.evaluate import evaluate_cluster
         print("Running evaluation pipeline...")
         # Run evaluation and get scores
-        adata_raw = preprocess(adata_raw, n_components=n_components, random_seed=random_seed)
+        adata= preprocess(adata, n_components=n_components, random_seed=random_seed)
 
         """ # Keep only spots present in adata
         common_idx = adata_raw.obs_names.intersection(adata.obs_names)
@@ -271,8 +242,8 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
          """
         plot_savepath=f"{ROOT}/multimetricST_outputs/figures/{data_name}/"
         os.makedirs(plot_savepath, exist_ok=True)
-        if 'ground_truth' in adata_raw.obs:
-            ground_truth =adata_raw.obs['ground_truth'] 
+        if 'ground_truth' in adata.obs:
+            ground_truth =adata.obs['ground_truth'] 
             print("gound truth was detcted in anndata and will be used for evaluation")
             method='ground_truth'
             print(f"Saving {method} cluster plot to {plot_savepath}")
@@ -282,23 +253,25 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
             print("gound truth was detcted in anndata and will be used for evaluation")
         
         # PCA matrix
-        pca_matrix = adata_raw.obsm["X_pca"]
+        pca_matrix = adata.obsm["X_pca"]
         if data_type=="Visium":
             is_visium=True
         else:
             is_visium=False
         results=[]
-        print("Evaluating clustering results...")
+        
         for m in comp_cost:
             method=m['method']
             # Clusters from adata
+            print(f"Evaluating clustering results...{method}")
             pred = adata.obs[method]
             # Keep only spots present in adata
 
-            scores=evaluate_cluster( adata_raw,pred.astype(int), ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
+            scores=evaluate_cluster( adata,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
             
             # Merge metrics and computational cost into one record
             m.update(scores)
+            print(m)
 
             # Append to list
             results.append(m)
@@ -306,7 +279,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
             plot_label(adata, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
 
         # Convert to DataFrame
-        results_df = pd.DataFrame(results).round(4)
+        results_df = pd.DataFrame(results) #.round(4)
         result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
         results_df.to_csv(result_savepath,  index=False)
         for col in adata.obs.columns:

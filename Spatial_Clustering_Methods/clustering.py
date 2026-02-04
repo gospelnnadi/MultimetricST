@@ -59,17 +59,22 @@ import numpy as np
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)  """
 methods = [ 
+   ("DeepST", runDeepST) ,
     ("CCST", runCCST),
     ("conST", runConST),
-    ("GIST", runGIST),
-    ("GraphST", runGraphST)
-   
+    ("GIST", runGIST), 
+    ("GraphST", runGraphST), 
+    ("SCAN-IT", runScanIT), 
+    ("SEDR", runSEDR),
+    ("SpaceFlow", runSpaceFlow) ,
+    ("SpaGCN", runSpaGCN), 
+    ("STAGATE", runSTAGATE)
 ]
 comp_cost = []
-def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7):
+def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7,decimal=4):
   for method_name, method_func in methods:
     print(f"\n\nRunning {method_name}...\n\n\n\n\n")
-    cluster_label,finaltime, peak_mem = method_func(adata_raw,data_name,data_type='Visium',n_clusters=7)
+    cluster_label,finaltime, peak_mem = method_func(adata_raw.copy(),data_name,data_type='Visium',n_clusters=7)
     adata_raw.obs[method_name]=np.array(cluster_label).astype(str)
     result = {
         "method": method_name,

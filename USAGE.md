@@ -49,7 +49,7 @@ python MultimetricST.py \\<br>
   --n_clusters 7 > outputs/multimetricst_mode1.log &
 
 
-Example 2: Visium data stored as .h5ad
+Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
 
 python MultimetricST.py \\<br>
   --mode 1\\<br> 
@@ -83,7 +83,8 @@ OR
 - External cluster label files (CSV / TSV / NPY)
 
 
-Mode 2 – Evaluation + Visualization Examples
+Mode 2 – Evaluation + Visualization Examples.
+
 Example 3: Evaluate cluster labels stored in adata.obs
 
 python MultimetricST.py \\<br>
@@ -164,46 +165,4 @@ All outputs are stored under:
 
 multimetricST_outputs/clustering_results.csv
 multimetricST_outputs/figures/<dataset_name>/<method_name>.png
-
-
-### Notes on Method Execution
-
-Method repositories are cloned automatically into Spatial_Clustering_Methods/
-
-Runtime and memory usage are recorded for each method
-
-New Python-based methods can be added by:
-
-- adding the GitHub URL to Spatial_Clustering_Methods/repos_git.txt
-
-- implementing a method-specific run function
-
-### Known Compatibility Notes
-
-#### SpaceFlow
-
-The following change is required for compatibility:
-
-File:
-
-Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py line 132 
-
-Replace:
-
- sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, flavor='cell_ranger', subset=True)
-
-
-With:
-
-sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, subset=True)
-
-
-#### SEDR 
-File:
-
-Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py line 52 
-
-Action:
-
-to be commented in order to use the r-base in the conda environment
 
