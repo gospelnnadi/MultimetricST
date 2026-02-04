@@ -46,7 +46,7 @@ python MultimetricST.py \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
   --ground_truth_col_name layer_guess \\<br>
   --data_name 151673 \\<br>
-  --n_clusters 7 > outputs/multimetricst_mode1.log &
+  --n_clusters 7 > logs/multimetricst_mode1.log &
 
 
 Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
@@ -57,7 +57,7 @@ python MultimetricST.py \\<br>
   --ground_truth ground_truth \\<br>
   --is_h5ad 1 \\<br>
   --data_name Axolotl_Brain \\<br>
-  --n_clusters 8 > outputs/multimetricst_mode1.log &
+  --n_clusters 8 > logs/multimetricst_mode1.log &
 
 
 This command:
@@ -90,7 +90,7 @@ Example 3: Evaluate cluster labels stored in adata.obs
 python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
-  --method_cluster_label GraphST SEDR SpaceFlow > outputs/multimetricst_mode2.log &
+  --method_cluster_label GraphST SEDR SpaceFlow > logs/multimetricst_mode2.log &
  
 Example 4: Evaluate cluster labels from CSV file
 
@@ -98,7 +98,7 @@ python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
-  --cluster_label_col_names GIST GraphST SEDR > outputs/multimetricst_mode2.log &
+  --cluster_label_col_names GIST GraphST SEDR > logs/multimetricst_mode2.log &
 
 
 ### Mode 3 – Visualization only
@@ -117,7 +117,7 @@ Example 5: Visualize precomputed evaluation results
 
 python MultimetricST.py \\<br>
   --mode 3 \\<br>
-  --result_savepath clustering_results.csv  > outputs/multimetricst_mode3.log &
+  --result_savepath clustering_results.csv  > logs/multimetricst_mode3.log &
 
 Example 6: Visualization with spatial plots
 
@@ -126,7 +126,7 @@ python MultimetricST.py \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --result_savepath clustering_results.csv \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
-  --cluster_label_col_names GraphST SEDR  > outputs/multimetricst_mode3.log &
+  --cluster_label_col_names GraphST SEDR  > logs/multimetricst_mode3.log &
 
 
 ## Dashboard

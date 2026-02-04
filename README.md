@@ -97,7 +97,7 @@ Each mode requires a different set of input data, consistent with the manuscript
 
 ### Notes on Method Execution
 
-Method repositories are cloned automatically into Spatial_Clustering_Methods/
+using the `download_repo.py` method repositories are cloned automatically into MultimetricST/Spatial_Clustering_Methods/
 
 Runtime and memory usage are recorded for each method
 
@@ -115,7 +115,7 @@ The following change is required for compatibility:
 
 File:
 
-Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py line 132 
+MultimetricST/Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py line 132 
 
 Replace:
 
@@ -130,7 +130,7 @@ sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, subset=True)
 #### SEDR 
 File:
 
-Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py line 52 
+MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py line 52 
 
 Action:
 
