@@ -117,10 +117,12 @@ The following change is required for compatibility. `download_repo.py` modifies 
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
 
 Download the DLPFC 151673 data:
-        wget https://zenodo.org/records/18482658/files/Data.zip
 
+        wget https://zenodo.org/records/18482658/files/Data.zip
         unzip Data.zip
         rm Data.zip
+
+Download the Axolotl dataset:
 
         wget https://zenodo.org/records/18482658/files/Stereo.zip
         unzip Stereo.zip -d Data/
