@@ -59,12 +59,9 @@ import numpy as np
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)  """
 methods = [ 
-  
-    ("SCAN-IT", runScanIT), 
-    ("SEDR", runSEDR),
-    ("SpaceFlow", runSpaceFlow) ,
     ("SpaGCN", runSpaGCN), 
-    ("STAGATE", runSTAGATE)
+    ("STAGATE", runSTAGATE),
+    ("SpaceFlow", runSpaceFlow)
 ]
 comp_cost = []
 def run_clustering_pipeline(adata_raw,data_name,data_type='Visium',n_clusters=7,decimal=4):

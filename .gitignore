@@ -1,4 +1,6 @@
 Data/*
+Evaluate/__pycache__
+Visualize_Scores/__pycache__
 Spatial_Clustering_Methods_old
 Spatial_Clustering_Methods/__pycache__
 Visualize_Scores/__pycache__
@@ -15,3 +17,4 @@ Spatial_Clustering_Methods/STAGATE_pyG
 logs
 run_bash1.ipynb
 slurm_exec_mmst1.sh
+Simulated_data

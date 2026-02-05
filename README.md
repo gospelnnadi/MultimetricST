@@ -34,7 +34,6 @@ install MultimetricST package.
 ````
 git clone https://github.com/InfOmics/MultimetricST.git
 cd ~/MultimetricST
-mkdir logs
 ````
 
 Download packages of the spatial transcriptomics spatial domain identification methods to be evaluated described in the paper.

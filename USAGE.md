@@ -52,7 +52,7 @@ python MultimetricST.py \\<br>
 Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
 
 python MultimetricST.py \\<br>
-  --mode 1\\<br> 
+  --mode 1 \\<br> 
   --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad \\<br>
   --ground_truth ground_truth \\<br>
   --is_h5ad 1 \\<br>

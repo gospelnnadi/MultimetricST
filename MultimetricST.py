@@ -172,37 +172,52 @@ def log_print(mode, data_name):
     log_file = f"{log_dir}/multimetricst_mode{mode}_{data_name}.log"
     if os.path.exists(log_file):
         os.remove(log_file)
-
-    # Configure logging
-    """logging.basicConfig(
-        level=logging.INFO,
-        format="%(asctime)s | %(levelname)s | %(message)s",
-        handlers=[
-        logging.FileHandler(log_file),
-        logging.StreamHandler(sys.stdout)  # still prints to console
-        ]
-    )
-
-    # Redirect print statements to logging
-     class PrintLogger:
-        def write(self, message):
-            message = message.strip()
-            if message:
-                logging.info(message)
-        def flush(self):
-            pass
-        def isatty(self):   # 👈 ADD THIS
-            return False
-
-    sys.stdout = PrintLogger()
-    sys.stderr = PrintLogger() """
+    
     logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[logging.FileHandler(log_file, mode="a")]
+    handlers=[
+        #logging.FileHandler(log_file, mode="w"),
+        logging.StreamHandler(sys.stdout)
+    ]
     )
+    logger = logging.getLogger(__name__)
 
-    import sys
+    sys.stdout = Tee(log_file)
+    sys.stderr = Tee(log_file)
+
+import sys
+from datetime import datetime
+
+class Tee:
+    def __init__(self, filename):
+        self.file = open(filename, "a")
+        self.stdout = sys.__stdout__
+        self.buffer = ""
+
+    def write(self, data):
+        self.stdout.write(data)  # keep normal console behavior
+
+        self.buffer += data
+
+        while "\n" in self.buffer:
+            line, self.buffer = self.buffer.split("\n", 1)
+
+            # Skip empty or progress-bar control lines
+            if line.strip() == "" or "\r" in line:
+                self.file.write(line + "\n")
+            else:
+                timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                self.file.write(f"{timestamp} | {line}\n")
+
+        self.file.flush()
+
+    def flush(self):
+        self.stdout.flush()
+        self.file.flush()
+
+
+    """ import sys
 
     class Tee:
         def __init__(self, filename):
@@ -219,7 +234,7 @@ def log_print(mode, data_name):
 
     sys.stdout = Tee(log_file)
     sys.stderr = Tee(log_file)
-
+ """
 
 
 
@@ -294,11 +309,6 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
         # Run evaluation and get scores
         adata= preprocess(adata, n_components=n_components, random_seed=random_seed)
 
-        """ # Keep only spots present in adata
-        common_idx = adata_raw.obs_names.intersection(adata.obs_names)
-        adata_raw = adata_raw[common_idx].copy()
-        adata = adata[common_idx].copy()
-         """
         plot_savepath=f"{ROOT}/multimetricST_outputs/figures/{data_name}/"
         os.makedirs(plot_savepath, exist_ok=True)
         if 'ground_truth' in adata.obs:
@@ -365,7 +375,6 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         # Load cluster labels
         print(" show methods_cluster_label ", args.method_cluster_label)
         print(" show methods_cluster_label type ", type(args.method_cluster_label))
-        #args.method_cluster_label = np.array(args.method_cluster_label).astype(str)
 
         cluster_labels = None
         if args.cluster_label_path and os.path.exists(args.cluster_label_path):
@@ -383,10 +392,6 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         # Run evaluation and get scores
         adata_raw = preprocess(adata_raw, n_components=n_components, random_seed=random_seed)
 
-        """ # Keep only spots present in adata
-        common_idx = adata_raw.obs_names.intersection(adata.obs_names)
-        adata_raw = adata_raw[common_idx].copy()
-        adata = adata[common_idx].copy() """
         plot_savepath=f"{ROOT}/multimetricST_outputs/figures/{data_name}/"
         os.makedirs(plot_savepath, exist_ok=True)
         if 'ground_truth' in adata_raw.obs:

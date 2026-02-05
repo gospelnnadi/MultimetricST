@@ -1,6 +1,5 @@
 
 
-
 def create_dashboard(result_path, plot_path=None):
     
     import os
@@ -15,16 +14,9 @@ def create_dashboard(result_path, plot_path=None):
 
     pn.extension("plotly")
 
-
     # ----------------------------
     # Define radar groups
     # ----------------------------
-    """ radar_groups = {
-    "Annotation-Dependent Metrics": ["ARI", "AMI", "Homogeneity", "Completeness", "V-Measure", "Purity"],
-    "Annotation-Independent Spatially Aware Transcriptomic Coherence Vs Standard Transcriptomic Coherence Vs Average Dispersion Metric": ["Silhouette-Spatial","Silhouette","Average-Dispersion"],#"Average-Dispersion"],
-    "Annotation-Independent Transcriptomic Coherence vs Spatial Compactness Metrics (I)": ["Silhouette","ASW"],
-    "Annotation-Independent Transcriptomic Coherence vs Spatial Compactness Metrics (II)": ["Davies-Bouldin", "CHAOS", "PAS"]
-    } """
     radar_groups = {
         "Annotation-Dependent Metrics (Best=Max)": ["ARI", "AMI", "Completeness","Homogeneity", "V-Measure", "Purity"],
         "Annotation-Independent Transcriptomic Coherence and Spatial Compactness Metrics (Best=Max)": ["Silhouette-Spatial","Silhouette", "ASW"],
@@ -52,7 +44,6 @@ def create_dashboard(result_path, plot_path=None):
             "Annotation-Independent Spatial Compactness Metrics and<br>Fragmentation Level (Best=Min)"
     }
 
-
     # ----------------------------
     # Widgets
     # ----------------------------
@@ -64,14 +55,10 @@ def create_dashboard(result_path, plot_path=None):
 
     radar_group_selector = pn.widgets.Select(
         name="Metric Group",
-        #options=list(radar_groups.keys()),
         options=radar_group_labels,
         value="Annotation-Dependent Metrics (Best=Max)",
     )
 
-
-    #bubble_x = pn.widgets.Select(name="Bubble X Metric", options=list(results_df.columns), value="Silhouette-Spatial")
-    #bubble_y = pn.widgets.Select(name="Bubble Y Metric", options=list(results_df.columns), value="Silhouette")
     bubble_x = pn.widgets.Select(name="Scatter X Metric", options=list(results_df.columns), value="Silhouette-Spatial")
     bubble_y = pn.widgets.Select(name="Scatter Y Metric", options=list(results_df.columns), value="Silhouette")
 
@@ -81,53 +68,46 @@ def create_dashboard(result_path, plot_path=None):
     fig_radar = go.FigureWidget()
 
     def update_radar(event=None):
-        group_name = radar_group_selector.value
-        selected_methods = model_selector.value
-        metrics = radar_groups[group_name]
-        fig_radar.data = []  # Clear existing traces
-        for method in selected_methods:
-            values = results_df.loc[results_df["method"] == method, metrics].values.flatten().tolist()
-            fig_radar.add_trace(go.Scatterpolar(
-                r=values,
-                theta=metrics,
-                fill='toself',
-                name=method
-            ))
+        try:
+            group_name = radar_group_selector.value
+            selected_methods = model_selector.value
+            metrics = radar_groups[group_name]
+            fig_radar.data = []  # Clear existing traces
+            for method in selected_methods:
+                values = results_df.loc[results_df["method"] == method, metrics].values.flatten().tolist()
+                fig_radar.add_trace(go.Scatterpolar(
+                    r=values,
+                    theta=metrics,
+                    fill='toself',
+                    name=method
+                ))
 
-        # Apply the HTML title mapping
-        html_title = radar_group_titles.get(group_name, group_name)   
-        fig_radar.update_layout(
-            width=700,
-            height=700,
-            polar=dict(radialaxis=dict(visible=True)),
-            showlegend=True,
-            legend=dict(
-                orientation="h",
-                yanchor="bottom",
-                y=-0.25,
-                xanchor="center",
-                x=0.5,
-                font=dict(size=11)
-            ),
-            title=dict(
-                text=f"<b>{html_title}</b>",
-                font=dict(size=16)
-            )#group_name,
-        
-        )
+            # Apply the HTML title mapping
+            html_title = radar_group_titles.get(group_name, group_name)   
+            fig_radar.update_layout(
+                width=700,
+                height=700,
+                polar=dict(radialaxis=dict(visible=True)),
+                showlegend=True,
+                legend=dict(
+                    orientation="h",
+                    yanchor="bottom",
+                    y=-0.25,
+                    xanchor="center",
+                    x=0.5,
+                    font=dict(size=11)
+                ),
+                title=dict(
+                    text=f"<b>{html_title}</b>",
+                    font=dict(size=16)
+                )#group_name,
+            )
+        except Exception:
+                pass
+       
 
     # Initial radar chart
     update_radar()
-
-    def safe_hover(event):
-        try:
-            point = event.values['points'][0]
-            curve = point.get('curveNumber', None)
-            idx = point.get('pointNumber', None)
-            print(f"Hovered curve {curve}, point {idx}")
-        except (KeyError, IndexError):
-            pass
-
 
     # Watch for widget changes
     radar_group_selector.param.watch(update_radar, 'value')
@@ -137,43 +117,43 @@ def create_dashboard(result_path, plot_path=None):
     # Bubble chart and bar chart
     # ----------------------------
     def make_bubble(selected, x_metric, y_metric):
-        df_filtered = results_df[results_df["method"].isin(selected)]
-        fig = px.scatter(df_filtered, x=x_metric, y=y_metric,
-                     #size="exec_time", 
+        try:
+            df_filtered = results_df[results_df["method"].isin(selected)]
+            fig = px.scatter(df_filtered, x=x_metric, y=y_metric,
                      color="method",
                      hover_data=["ARI","AMI","Homogeneity","Purity", 
                             "Completeness","V-Measure","Silhouette-Spatial","Average-Dispersion", "Silhouette", "Davies-Bouldin", "CHAOS", "PAS","ASW" ])
     
     
-        #fig.update_layout(width=700, height=500,title=f"<b>Trade-off: {x_metric} vs {y_metric} (bubble size = exec_time (s))<b>")
-        fig.update_traces(marker=dict(size=14, opacity=0.8,))
-        fig.update_layout(width=700, height=500,title=f"<b>Trade-off: {x_metric} vs {y_metric}<b>")
+            fig.update_traces(marker=dict(size=14, opacity=0.8,))
+            fig.update_layout(width=700, height=500,title=f"<b>Trade-off: {x_metric} vs {y_metric}<b>")
 
 
-        fig.update_layout(
-         #legend_title_text="Method",
+            fig.update_layout(
             margin=dict(l=40, r=40, t=40, b=40)
-        )
+            )
+        except Exception:
+                pass 
         return fig  
 
-
     def make_bar(selected):
-        df_filtered = results_df[results_df["method"].isin(selected)].copy()
-        # Rename columns for clearer legend labels
-        df_filtered = df_filtered.rename(columns={
+        try:
+            df_filtered = results_df[results_df["method"].isin(selected)].copy()
+            # Rename columns for clearer legend labels
+            df_filtered = df_filtered.rename(columns={
             "exec_time": "Execution Time (s)",
             "peak_memory": "Peak Memory (MB)"
-        })
+            })
 
-        fig = px.bar(
+            fig = px.bar(
             df_filtered,
             x="method",
             y=["Execution Time (s)", "Peak Memory (MB)"],
             barmode="group",
             title="<b>Execution Time (in seconds) & Peak Memory (in MB)</b>"
-        )
+            )
 
-        fig.update_layout(
+            fig.update_layout(
             width=800,
             height=600,
             legend_title_text="Metric",
@@ -181,7 +161,9 @@ def create_dashboard(result_path, plot_path=None):
             yaxis_title="Value (seconds, MB)",
             font=dict(size=12),
             title_font=dict(size=16)
-        )
+            )
+        except Exception:
+                pass
 
         return fig
 
@@ -193,7 +175,6 @@ def create_dashboard(result_path, plot_path=None):
     else: 
         bar_panel=None
         bar_panel_title=None
-
 
 
     # ----------------------------
@@ -221,36 +202,39 @@ def create_dashboard(result_path, plot_path=None):
     import panel as pn
 
     def make_interpretation_table(selected_methods):
-        rows = []
-        df_filtered = results_df[results_df["method"].isin(selected_methods)]
-        for metric, desc in metric_interpretations.items():
-            # Sort by metric (ascending for DBI, else descending)
-            ascending = True if metric == "Davies-Bouldin" else False
-            top2 = df_filtered.sort_values(metric, ascending=ascending)["method"].head(2).tolist()
-            rows.append([metric, ", ".join(top2), desc])
+        try:
+            rows = []
+            df_filtered = results_df[results_df["method"].isin(selected_methods)]
+            for metric, desc in metric_interpretations.items():
+                # Sort by metric (ascending for DBI, else descending)
+                ascending = True if metric == "Davies-Bouldin" else False
+                top2 = df_filtered.sort_values(metric, ascending=ascending)["method"].head(2).tolist()
+                rows.append([metric, ", ".join(top2), desc])
 
-        interp_df = pd.DataFrame(
-            rows,
-            columns=["Metric Category", "Top 2 Performing Method", "Biological Relevance / Interpretation"]
-        )
+            interp_df = pd.DataFrame(
+                rows,
+                columns=["Metric Category", "Top 2 Performing Method", "Biological Relevance / Interpretation"]
+            )
+        except Exception:
+                pass
         return interp_df
 
     # ----------------------------
     # Panel widget: dynamic, read-only Tabulator
     # ----------------------------
     def make_readonly_interp_table(selected_methods):
-        df = make_interpretation_table(selected_methods)
-        table = pn.widgets.Tabulator(
+        try:
+            df = make_interpretation_table(selected_methods)
+            table = pn.widgets.Tabulator(
             df,
             pagination="remote",
-            page_size=13,
-            #sizing_mode="stretch_width",
+            page_size=12,
             selectable=False,
             show_index=False
-        )
+            )
 
-        # Make table fully read-only
-        table.configuration = {
+            # Make table fully read-only
+            table.configuration = {
             "selectable": False,
             "movableColumns": False,
             "movableRows": False,
@@ -258,18 +242,22 @@ def create_dashboard(result_path, plot_path=None):
             "editable": False,
             "clipboard": False,
             "layout": "fitColumns"
-        }
-        table.disabled = True
+            }
+            table.disabled = True
+        except Exception:
+                pass
         return table
 
     interp_panel = pn.bind(make_readonly_interp_table, model_selector)
+
+
 
     # ----------------------------
     # 4 Tables of Metric Scores with optional Color Highlighting + proper sorting
     # ----------------------------
     metric_tables = {
         "Annotation-Dependent Metrics": ["ARI", "AMI", "Purity", "Homogeneity", "Completeness", "V-Measure"],
-        "Spatially Aware Transcriptomic Metrics": ["Silhouette-Spatial", "Average-Dispersion"],  # or ["Silhouette-Spatial", "ADI"]
+        "Spatially Aware Transcriptomic Metrics": ["Silhouette-Spatial", "Average-Dispersion"],  
         "Spatial Compactness Metrics": ["CHAOS", "PAS", "ASW"],
         "Transcriptomic Coherence Metrics": ["Davies-Bouldin", "Silhouette"]
     }
@@ -278,42 +266,44 @@ def create_dashboard(result_path, plot_path=None):
         Create a read-only, fully sortable Tabulator table in Panel 1.8.2
         without HTML/color formatting (numeric columns sort correctly).
         """
-        # 1) prepare dataframe and filter by selected methods
-        sub_df = results_df[["method"] + [m for m in metrics if m in results_df.columns]].copy()
-        if selected_methods is not None:
-            sub_df = sub_df[sub_df["method"].isin(selected_methods)].reset_index(drop=True)
+        try:
+            # 1) prepare dataframe and filter by selected methods
+            sub_df = results_df[["method"] + [m for m in metrics if m in results_df.columns]].copy()
+            if selected_methods is not None:
+                sub_df = sub_df[sub_df["method"].isin(selected_methods)].reset_index(drop=True)
 
-        # 2) ensure numeric columns where appropriate
-        for m in metrics:
-            if m in sub_df.columns:
-                sub_df[m] = pd.to_numeric(sub_df[m], errors="coerce")
+            # 2) ensure numeric columns where appropriate
+            for m in metrics:
+                if m in sub_df.columns:
+                    sub_df[m] = pd.to_numeric(sub_df[m], errors="coerce")
 
-        # 3) create Tabulator without columns argument
-        table = pn.widgets.Tabulator(
-            sub_df,
-            #sizing_mode="stretch_width",
-            pagination="remote",
-            page_size=10,
-            selectable=False,
-            show_index=False
-        )
+            # 3) create Tabulator without columns argument
+            table = pn.widgets.Tabulator(
+                sub_df,
+                #sizing_mode="stretch_width",
+                pagination="remote",
+                page_size=10,
+                selectable=False,
+                show_index=False
+            )
 
         # 4) assign columns after init
-        cols = [{"field": "method", "title": "Method", "headerSort": True}]
-        for m in metrics:
-            if m not in sub_df.columns:
-                continue
-            cols.append({
+            #cols = [{"field": "method", "title": "Method", "headerSort": True}]
+            cols = [{"field": "method", "title": "Method", "headerSort": True, "hozAlign": "left", "formatter": "plaintext"}]
+            for m in metrics:
+                if m not in sub_df.columns:
+                    continue
+                cols.append({
                 "field": m,
                 "title": m,
                 "sorter": "number",
                 "hozAlign": "right",
                 "editable": False
             })
-        table.columns = cols
+            table.columns = cols
 
-        # 5) make table fully read-only
-        table.configuration = {
+            # 5) make table fully read-only
+            table.configuration = {
             "selectable": False,
             "movableColumns": False,
             "movableRows": False,
@@ -321,11 +311,11 @@ def create_dashboard(result_path, plot_path=None):
             "editable": False,
             "clipboard": False,
             "layout": "fitColumns"
-        }
-        table.disabled = True
-
+            }
+            table.disabled = True
+        except Exception:
+                pass
         return table
-
 
 
     # Create four tables (as reactive binds so they update when color_toggle or model_selector changes)
@@ -337,36 +327,28 @@ def create_dashboard(result_path, plot_path=None):
     tables_panel = pn.Column(
     
         pn.pane.Markdown("### Annotation-Dependent Metrics"),
-        pn.Column(
+        pn.Row(pn.Column(
         pn.pane.Markdown("### Table 1"),
-        table1),
+        table1),pn.pane.Markdown("")),
         pn.pane.Markdown("### Annotation-Independent Metrics"),
         pn.Row( 
             pn.Column(
             pn.pane.Markdown("### Table 2: Spatial Compactness Metrics"),
-        table2),pn.Spacer(width=150),
+        table2),pn.Spacer(width=100),
         pn.Column(
         pn.pane.Markdown("### Table 3: Transcriptomic Coherence Metrics"),
-        table3),pn.Spacer(width=150),
-        pn.Column(
+        table3),pn.Spacer(width=100)),
+        pn.Row(pn.Column(
         pn.pane.Markdown("### Table 4: Spatial Compactness and Transcriptomic Coherence Metrics"),
-        table4))
+        table4),pn.pane.Markdown(""))
     
     )
-    pn.config.raw_css.append("""
-    .tabulator-cell div {
-        text-align: center;
-        font-weight: 500;
-        font-size: 13px;
-        border-radius: 4px;
-    }   
-    """)
+ 
 
     # ----------------------------
     # Display tissue cluster images
     # ----------------------------
     import os
-    data_name="151673"
 
     from PIL import Image
     import numpy as np
@@ -377,57 +359,60 @@ def create_dashboard(result_path, plot_path=None):
         Display tissue cluster images with interactive zoom.
         Loads images with PIL and converts to NumPy for Plotly.
         """
-        panels = []
-        method="ground_truth"
-        img_path = os.path.join(plot_path, f"{method}.png")
-        if os.path.exists(img_path):
-            # Load image with PIL and convert to array
-                img = np.array(Image.open(img_path))
-
-                # Create Plotly figure
-                fig = px.imshow(img)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10),
-                    width=thumb_size,
-                    height=thumb_size,
-                )
-                fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-                fig.update_layout(dragmode='zoom')  # enable zoom
-
-                fig_pane = pn.pane.Plotly(fig, sizing_mode="fixed", width=thumb_size, height=thumb_size)
-
-                panels.append(pn.Column(pn.panel(f"### {method}",align="center"), fig_pane, width=thumb_size, margin=(0, padding)))
-            
-        for method in selected_methods:
+        try:
+            panels = []
+            method="ground_truth"
             img_path = os.path.join(plot_path, f"{method}.png")
             if os.path.exists(img_path):
-            # Load image with PIL and convert to array
-                img = np.array(Image.open(img_path))
+                # Load image with PIL and convert to array
+                    img = np.array(Image.open(img_path))
 
-                # Create Plotly figure
-                fig = px.imshow(img)
-                fig.update_layout(
-                    margin=dict(l=10, r=10, t=30, b=10),
-                    width=thumb_size,
-                    height=thumb_size,
-                )
-                fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
-                fig.update_layout(dragmode='zoom')  # enable zoom
+                    # Create Plotly figure
+                    fig = px.imshow(img)
+                    fig.update_layout(
+                        margin=dict(l=10, r=10, t=30, b=10),
+                        width=thumb_size,
+                        height=thumb_size,
+                    )
+                    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+                    fig.update_layout(dragmode='zoom')  # enable zoom
 
-                fig_pane = pn.pane.Plotly(fig, sizing_mode="fixed", width=thumb_size, height=thumb_size)
+                    fig_pane = pn.pane.Plotly(fig, sizing_mode="fixed", width=thumb_size, height=thumb_size)
 
-                panels.append(pn.Column(pn.panel(f"### {method}",align="center"), fig_pane, width=thumb_size, margin=(0, padding)))
-            else:
-                panels.append(pn.Column(pn.panel(f"### {method}",align="center"), pn.pane.Markdown("Image not found"), width=thumb_size, margin=(0, padding)))
+                    panels.append(pn.Column(pn.panel(f"### {method}",align="center"), fig_pane, width=thumb_size, margin=(0, padding)))
+            
+            for method in selected_methods:
+                img_path = os.path.join(plot_path, f"{method}.png")
+                if os.path.exists(img_path):
+                # Load image with PIL and convert to array
+                    img = np.array(Image.open(img_path))
+
+                    # Create Plotly figure
+                    fig = px.imshow(img)
+                    fig.update_layout(
+                        margin=dict(l=10, r=10, t=30, b=10),
+                        width=thumb_size,
+                        height=thumb_size,
+                    )
+                    fig.update_xaxes(showticklabels=False).update_yaxes(showticklabels=False)
+                    fig.update_layout(dragmode='zoom')  # enable zoom
+
+                    fig_pane = pn.pane.Plotly(fig, sizing_mode="fixed", width=thumb_size, height=thumb_size)
+
+                    panels.append(pn.Column(pn.panel(f"### {method}",align="center"), fig_pane, width=thumb_size, margin=(0, padding)))
+                else:
+                    panels.append(pn.Column(pn.panel(f"### {method}",align="center"), pn.pane.Markdown("Image not found"), width=thumb_size, margin=(0, padding)))
     
-        # Arrange in rows
-        rows = []
-        for i in range(0, len(panels), n_cols):
-            row = pn.Row(*panels[i:i+n_cols], sizing_mode="stretch_width", margin=(0, padding))
-            rows.append(row)
-
-        # Wrap in scrollable column
+            # Arrange in rows
+            rows = []
+            for i in range(0, len(panels), n_cols):
+                row = pn.Row(*panels[i:i+n_cols], sizing_mode="stretch_width", margin=(0, padding))
+                rows.append(row)
+        except Exception:
+                pass
+            # Wrap in scrollable column
         return pn.Column(*rows, sizing_mode="stretch_width", margin=(0, padding), scroll=True, max_height=800)
+    
     if plot_path==None:
         cluster_panel=None
         cluster_panel_title=None
@@ -444,13 +429,12 @@ def create_dashboard(result_path, plot_path=None):
         "# 📊 MultimetricST Dashboard",
         pn.Row(model_selector, margin=(0, 0, 35, 0) ),
         pn.pane.Markdown("## 📈 Visualization of Metric Behaviour"),
-        pn.Row( 
+       
         pn.Column(radar_group_selector,
         pn.Row(pn.panel(fig_radar, align="start"),align="start"),margin=(0, 65, 0, 0)),
         pn.Column(
         pn.Row(bubble_x, bubble_y ,margin=(0, 0, 35, 0) ),
-        pn.Row(pn.panel(bubble_panel,align="center",margin=(15, 0, 0, 45)), align="end"),margin=(0, 0, 0, 45))
-        ,align="center"),
+        pn.Row(pn.panel(bubble_panel,align="start",margin=(15, 0, 0, 45)), align="start"),margin=(0, 0, 0, 45)),
     
         cluster_panel_title,
         cluster_panel,
@@ -468,6 +452,21 @@ def create_dashboard(result_path, plot_path=None):
     
 
         )
+    pn.config.sizing_mode = "stretch_width"
+    pn.config.template = "fast"
+    import panel.pane.plotly as pp
+
+    _orig_process_event = pp.Plotly._process_event
+
+    def _safe_process_event(self, event):
+        try:
+            _orig_process_event(self, event)
+        except KeyError:
+            pass  
+
+    pp.Plotly._process_event = _safe_process_event
+
+
     return dashboard
 
 
