@@ -57,6 +57,7 @@ python MultimetricST.py \\<br>
   --ground_truth ground_truth \\<br>
   --is_h5ad 1 \\<br>
   --data_name Axolotl_Brain \\<br>
+  --plot_size 35  \\<br>
   --n_clusters 8 &
 
 

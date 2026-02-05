@@ -59,11 +59,7 @@ import numpy as np
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)  """
 methods = [ 
-   ("DeepST", runDeepST) ,
-    ("CCST", runCCST),
-    ("conST", runConST),
-    ("GIST", runGIST), 
-    ("GraphST", runGraphST), 
+  
     ("SCAN-IT", runScanIT), 
     ("SEDR", runSEDR),
     ("SpaceFlow", runSpaceFlow) ,

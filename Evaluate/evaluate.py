@@ -8,6 +8,9 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 
+import time
+import tracemalloc
+# Start measuring time and memory
 
 
 
@@ -90,7 +93,8 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     >>> scores = evaluate_cluster(adata=adata, pred=y_pred, ground_truth=y_true, pca_matrix=pca, is_visium=False)
     >>> print(scores["ARI"], scores["SSC], scores["CHAOS"])
     """
-
+    start_time = time.time()
+    tracemalloc.start()
     # If no PCA matrix is provided, use adata.X (convert from sparse if necessary)
     if pca_matrix is None:
         if issparse(adata.X):
@@ -158,9 +162,18 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
 
     else:
         # Fallback values for single-cluster predictions
-        silhouette_spatial, silhouette, davies_bouldin, chaos, pas, ASW = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        silhouette_spatial, penalty, silhouette, davies_bouldin, chaos, pas, ASW = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
         print("Cluster size is less than 2")
 
+    current, peak = tracemalloc.get_traced_memory()
+    end_time = time.time()
+    tracemalloc.stop()
+    finaltime = f"{end_time - start_time:.4f}"
+    current=f"{current / 10**6:.4f}"
+    peak=f"{peak / 10**6:.4f}"
+    print(f"Evaluation runtime: {finaltime} seconds")
+    print(f"Current memory usage: {current} MB")
+    print(f"Peak memory usage: {peak} MB")
     # Print metrics if verbose mode is on
     if verbose:
         print('ARI: ', ARI)

@@ -172,7 +172,7 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     parser.add_argument( '--data_path', type=str, default='../generated_data/', help='data path')
     parser.add_argument( '--model_path', type=str, default='../model') 
     parser.add_argument( '--embedding_data_path', type=str, default='../Embedding_data') 
-    parser.add_argument( '--result_path', type=str, default='results') 
+    parser.add_argument( '--result_path', type=str, default='../results') 
     parser.add_argument( '--DGI', type=int, default=1, help='run Deep Graph Infomax(DGI) model, otherwise direct load embeddings')
     parser.add_argument( '--load', type=int, default=0, help='Load pretrained DGI model')
     parser.add_argument( '--num_epoch', type=int, default=5000, help='numebr of epoch in training DGI')

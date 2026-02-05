@@ -146,6 +146,11 @@ Download the DLPFC 151673 data:
         wget https://zenodo.org/records/18482658/files/Data.zip
 
         unzip Data.zip
+        rm Data.zip
+
+        wget https://zenodo.org/records/18482658/files/Stereo.zip
+        unzip Stereo.zip -d Data/
+        rm Stereo.zip
 
 
 For detailed command-line usage and dataset-specific examples, see [View Usage Documentation](USAGE.md).

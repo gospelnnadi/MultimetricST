@@ -6,6 +6,7 @@ import scanpy as sc
 from sklearn.decomposition import PCA
 from Evaluate.evaluate import evaluate_cluster
 from Evaluate.utils import *
+import anndata as ad
 
 
 
@@ -14,7 +15,6 @@ import sys, os
 ROOT = os.getcwd()
 print("The current working dir is, ", ROOT)
 
-import anndata as ad
 
 
 def get_adata_from_path(path, is_h5ad):
@@ -65,8 +65,6 @@ def plot_label(adata, plot_size, key, savepath):
       
       sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
       adata.uns.pop(f'{key}_colors')
-
-
 
 
 
@@ -164,17 +162,19 @@ def validate_arguments(args):
         print(f"Error: Invalid mode {args.mode}. Mode must be 1, 2, or 3.")
 
 
-def log_print(mode):
+def log_print(mode, data_name):
     import os
     import sys
     import logging
 
     log_dir = f"{ROOT}/logs"
     os.makedirs(log_dir, exist_ok=True)
-    log_file = f"{log_dir}/multimetricst_mode{mode}.log"
+    log_file = f"{log_dir}/multimetricst_mode{mode}_{data_name}.log"
+    if os.path.exists(log_file):
+        os.remove(log_file)
 
     # Configure logging
-    logging.basicConfig(
+    """logging.basicConfig(
         level=logging.INFO,
         format="%(asctime)s | %(levelname)s | %(message)s",
         handlers=[
@@ -184,16 +184,42 @@ def log_print(mode):
     )
 
     # Redirect print statements to logging
-    class PrintLogger:
+     class PrintLogger:
         def write(self, message):
             message = message.strip()
             if message:
                 logging.info(message)
         def flush(self):
             pass
+        def isatty(self):   # 👈 ADD THIS
+            return False
 
     sys.stdout = PrintLogger()
-    sys.stderr = PrintLogger()
+    sys.stderr = PrintLogger() """
+    logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=[logging.FileHandler(log_file, mode="a")]
+    )
+
+    import sys
+
+    class Tee:
+        def __init__(self, filename):
+            self.file = open(filename, "w")
+            self.stdout = sys.__stdout__
+
+        def write(self, data):
+            self.file.write(data)
+            self.stdout.write(data)
+
+        def flush(self):
+            self.file.flush()
+            self.stdout.flush()
+
+    sys.stdout = Tee(log_file)
+    sys.stderr = Tee(log_file)
+
 
 
 
@@ -205,7 +231,7 @@ def main(args):
     """
     Main function that orchestrates the three modes of operation based on user input.
     """
-    log_print(args.mode)
+    log_print(args.mode, args.data_name)
     # Validate input parameters based on mode
     if not validate_arguments(args):
         return
@@ -304,7 +330,6 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
             
             # Merge metrics and computational cost into one record
             m.update(scores)
-            print(m)
 
             # Append to list
             results.append(m)
