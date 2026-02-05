@@ -46,6 +46,8 @@ python MultimetricST.py \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
   --ground_truth_col_name layer_guess \\<br>
   --data_name 151673 \\<br>
+  --is_h5ad 0 \\<br>
+  --data_type Visium \\<br>
   --n_clusters 7 &
 
 
@@ -57,6 +59,7 @@ python MultimetricST.py \\<br>
   --ground_truth ground_truth \\<br>
   --is_h5ad 1 \\<br>
   --data_name Axolotl_Brain \\<br>
+  --data_type Stereo \\<br>
   --plot_size 35  \\<br>
   --n_clusters 8 &
 
@@ -91,6 +94,8 @@ Example 3: Evaluate cluster labels stored in adata.obs
 python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
+  --is_h5ad 0 \\<br>
+  --data_type Visium \\<br>
   --method_cluster_label GraphST SEDR SpaceFlow &
  
 Example 4: Evaluate cluster labels from CSV file
@@ -98,6 +103,8 @@ Example 4: Evaluate cluster labels from CSV file
 python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
+  --is_h5ad 0 \\<br>
+  --data_type Visium \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
   --cluster_label_col_names GIST GraphST SEDR &
 
@@ -127,7 +134,9 @@ python MultimetricST.py \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --result_savepath clustering_results.csv \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
-  --cluster_label_col_names GraphST SEDR  &
+  --cluster_label_col_names GraphST SEDR  \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess &
 
 
 ## Dashboard
