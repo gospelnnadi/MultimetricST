@@ -55,12 +55,21 @@ def get_adata_from_exp_spatial_path(mode, expression_path, spatial_path):
 
 
 def plot_label(adata, plot_size, key, savepath):
+    import matplotlib.pyplot as plt
     import squidpy as sq
     if plot_size:
       #os.makedirs("figures/show/", exist_ok=True)
       #sc.pl.spatial(adata, color=key, spot_size=plot_size,save=f"/{savepath}") 
-      sc.pl.spatial(adata, color=key, spot_size=plot_size,save= savepath) 
+      #sc.pl.spatial(adata, color=key, spot_size=plot_size,save= savepath) 
+      sc.pl.spatial(
+        adata,
+        color=key,
+        spot_size=plot_size,
+        show=False   
+        )
       adata.uns.pop(f'{key}_colors')
+      plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
+      plt.close()
     else: 
       
       sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
@@ -172,16 +181,6 @@ def log_print(mode, data_name):
     log_file = f"{log_dir}/multimetricst_mode{mode}_{data_name}.log"
     if os.path.exists(log_file):
         os.remove(log_file)
-    
-    logging.basicConfig(
-    level=logging.INFO,
-    format="%(asctime)s | %(levelname)s | %(message)s",
-    handlers=[
-        #logging.FileHandler(log_file, mode="w"),
-        logging.StreamHandler(sys.stdout)
-    ]
-    )
-    logger = logging.getLogger(__name__)
 
     sys.stdout = Tee(log_file)
     sys.stderr = Tee(log_file)
@@ -557,7 +556,7 @@ if __name__ == '__main__':
                        help="Dataset Name. Can be: 151673 (DLPFC slice) or Mouse_Kidney etc. ")
     
     parser.add_argument("--data_type", type=str, default='Visium',
-                       help="Data technology is Visium  etc . Default is Visium")
+                       help="Data technology Visium, Stereo, Slide. Default is Visium")
     parser.add_argument("--is_h5ad", type=int, default=0, choices=[0, 1],
                        help="Data is in h5ad format (1) or not (0). Default is 0 for Visium data folder")
     

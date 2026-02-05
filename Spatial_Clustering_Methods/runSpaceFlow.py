@@ -39,23 +39,12 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     start_time = time.time()
     tracemalloc.start()
 
-
     sf = SpaceFlow.SpaceFlow(adata=adata)
 
     #preprocess
     sf.preprocessing_data(n_top_genes=3000)
 
-    """ sf.train(spatial_regularization_strength=0.1, 
-         z_dim=50, 
-         lr=1e-3, 
-         epochs=1000, 
-         max_patience=50, 
-         min_stop=100, 
-         random_seed=42, 
-         #gpu=1, 
-         regularization_acceleration=True, 
-         edge_subset_sz=1000000) """
-    adata.obsm['SpaceFlow_embedding']=sf.train()
+    adata.obsm['SpaceFlow_embedding']=sf.train(embedding_save_filepath="../../embedding.tsv")
     current, peak = tracemalloc.get_traced_memory()
     end_time = time.time()
     tracemalloc.stop()

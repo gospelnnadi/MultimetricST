@@ -96,7 +96,9 @@ python MultimetricST.py \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --is_h5ad 0 \\<br>
   --data_type Visium \\<br>
-  --method_cluster_label GraphST SEDR SpaceFlow &
+  --method_cluster_label CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess &
  
 Example 4: Evaluate cluster labels from CSV file
 
@@ -106,7 +108,9 @@ python MultimetricST.py \\<br>
   --is_h5ad 0 \\<br>
   --data_type Visium \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
-  --cluster_label_col_names GIST GraphST SEDR &
+  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess &
 
 
 ### Mode 3 – Visualization only
@@ -134,7 +138,7 @@ python MultimetricST.py \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --result_savepath clustering_results.csv \\<br>
   --cluster_label_path clustering_labels.csv \\<br>
-  --cluster_label_col_names GraphST SEDR  \\<br>
+  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
   --ground_truth_col_name layer_guess &
 

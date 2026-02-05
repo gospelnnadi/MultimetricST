@@ -109,32 +109,7 @@ New Python-based methods can be added by:
 
 ### Known Compatibility Notes
 
-#### SpaceFlow
-
-The following change is required for compatibility:
-
-File:
-
-MultimetricST/Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py line 132 
-
-Replace:
-
- sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, flavor='cell_ranger', subset=True)
-
-
-With:
-
-sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, subset=True)
-
-
-#### SEDR 
-File:
-
-MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py line 52 
-
-Action:
-
-to be commented in order to use the r-base in the conda environment
+The following change is required for compatibility. `download_repo.py` modifies the spatial domain identification method `SEDR` file: MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py, line 52 is commented in order to use the r-base in the created conda environment (MMST). 
 
 
 

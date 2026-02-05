@@ -32,3 +32,24 @@ def download_repo():
     print("✨ All repositories processed!")
 
 download_repo()
+
+def fix_known_incompactibilities():
+    from pathlib import Path
+
+    # --- SEDR FIX ---
+    sedr_file = Path("Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py")
+
+    lines = sedr_file.read_text().splitlines()
+
+    with sedr_file.open("w") as f:
+        for line in lines:
+            # Comment out any R home forcing lines
+            if "R_HOME" in line and "#" not in line:
+                f.write("\t#" + line + "\n")
+                print("✅ SEDR R-environment patch applied")
+            else:
+                f.write(line + "\n")
+
+   
+
+fix_known_incompactibilities()
