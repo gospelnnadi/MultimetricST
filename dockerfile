@@ -4,17 +4,58 @@ FROM ubuntu:22.04
 # Set noninteractive for apt
 ENV DEBIAN_FRONTEND=noninteractive
 
+RUN apt-get update && apt-get install -y \
+    wget unzip git curl bzip2 ca-certificates sudo \
+    libssl-dev libxml2-dev libcurl4-openssl-dev libopenblas-dev \
+    build-essential \
+    gfortran \
+    libreadline-dev \
+    libx11-dev \
+    libxt-dev \
+    zlib1g-dev \
+    libbz2-dev \
+    liblzma-dev \
+    libpcre2-dev \
+    libjpeg-dev \
+    libpng-dev \
+    libcairo2-dev \
+    libtiff5-dev \
+    libblas-dev \
+    liblapack-dev \
+    && rm -rf /var/lib/apt/lists/*
+
 
 # Install Miniconda
-ENV CONDA_DIR=/opt/conda
-RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py310_23.11.1-0-Linux-x86_64.sh -O /tmp/miniconda.sh && \
-    bash /tmp/miniconda.sh -b -p $CONDA_DIR && \
-    rm /tmp/miniconda.sh
-ENV PATH=$CONDA_DIR/bin:$PATH
+# Set HOME explicitly (during build this is /root)
+ENV HOME=/root
 
-# Create and activate conda environment
-RUN conda create -n MMST -y python=3.10 r-base=4.3.1 somoclu=1.7.5
+# Install Miniconda like on your local machine
+RUN mkdir -p $HOME/miniconda3 && \
+    wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O $HOME/miniconda3/miniconda.sh && \
+    bash $HOME/miniconda3/miniconda.sh -b -u -p $HOME/miniconda3 && \
+    rm $HOME/miniconda3/miniconda.sh
+
+# Make conda available in PATH
+ENV PATH=$HOME/miniconda3/bin:$PATH
+
+RUN conda --version 
+# Initialize conda (mainly for interactive shells)
+RUN conda init --all
+
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+RUN conda config --add channels conda-forge
+
+
+#Create and activate conda environment
+RUN conda create -n MMST -y 
 SHELL ["conda", "run", "-n", "MMST", "/bin/bash", "-c"]
+
+RUN conda install python=3.10 r-base=4.3.1 r-essentials rpy2=3.5.11 somoclu=1.7.5 -y
+
+ENV R_HOME=/root/miniconda3/envs/MMST/lib/R
+ENV LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
+
 
 # Install PyTorch and PyTorch Geometric
 RUN pip install torch==2.1.0 \
@@ -32,7 +73,7 @@ RUN pip install torch-geometric==2.7.0
 WORKDIR /workspace
 COPY . /workspace
 
-# Install Python requirements
+#Install Python requirements
 RUN pip install -r requirements.txt
 
 # Install mclust in R
@@ -42,6 +83,3 @@ RUN Rscript -e 'install.packages("remotes", repos="https://cran.r-project.org")'
 # Expose a working directory for data
 VOLUME /workspace
 
-# Default command to run MultimetricST
-# Can be overridden with `docker run ...`
-#CMD ["conda", "run", "-n", "MMST", "python", "MultimetricST.py", "--mode", "1", "--data_path", "Data/DLPFC/151673", "--ground_truth", "Data/DLPFC/151673/metadata.tsv", "--ground_truth_col_name", "layer_guess", "--data_name", "151673", "--is_h5ad", "0", "--data_type", "Visium", "--n_clusters", "7"]
