@@ -1,12 +1,12 @@
 
 ---
 
-# USAGE.md
+# USAGE-Docker.md
 
 
-# MultimetricST – Usage Guide
+# MultimetricST – Usage Guide for Docker run 
 
-This document provides **practical usage instructions and example commands** for running MultimetricST in different modes and datasets, consistent with the experimental setup described in the paper.
+This document provides **practical usage instructions and example commands** for running MultimetricST through dockerized environment in different modes and datasets, consistent with the experimental setup described in the paper.
 
 ---
 
@@ -15,7 +15,8 @@ This document provides **practical usage instructions and example commands** for
 All functionality is accessed through:
 
 
-python MultimetricST.py
+docker run --rm -it -v ~/MultimetricST:/workspace docker-mmst \\<br>
+conda run -n MMST python MultimetricST.py
 
 
 ## Input Data Requirements (by Mode)
@@ -40,7 +41,8 @@ Mode 1 – Full Pipeline Examples.
 Example 1: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
 Execute the following command.
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 1 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
@@ -53,7 +55,8 @@ python MultimetricST.py \\<br>
 
 Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 1 \\<br> 
   --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad \\<br>
   --ground_truth ground_truth \\<br>
@@ -91,7 +94,8 @@ Mode 2 – Evaluation + Visualization Examples.
 
 Example 3: Evaluate cluster labels stored in adata.obs
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --is_h5ad 0 \\<br>
@@ -102,7 +106,8 @@ python MultimetricST.py \\<br>
  
 Example 4: Evaluate cluster labels from CSV file
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 2 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --is_h5ad 0 \\<br>
@@ -127,13 +132,15 @@ Optional
 Mode 3 – Visualization Only Examples
 Example 5: Visualize precomputed evaluation results
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 3 \\<br>
   --result_savepath clustering_results.csv  &
 
 Example 6: Visualization with spatial plots
 
-python MultimetricST.py \\<br>
+docker run --rm -it -v  ~/MultimetricST:/workspace -w /workspace --user $(id -u):$(id -g) docker-mmst  \\<br>
+conda run -n MMST python MultimetricST.py \\<br>
   --mode 3 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --result_savepath clustering_results.csv \\<br>
