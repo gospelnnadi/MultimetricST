@@ -182,13 +182,13 @@ def log_print(mode, data_name):
     if os.path.exists(log_file):
         os.remove(log_file)
 
-    sys.stdout = Tee(log_file)
-    sys.stderr = Tee(log_file)
+    sys.stdout = PrintLogger(log_file)
+    sys.stderr = PrintLogger(log_file)
 
 import sys
 from datetime import datetime
 
-class Tee:
+class PrintLogger:
     def __init__(self, filename):
         self.file = open(filename, "a")
         self.stdout = sys.__stdout__
@@ -214,26 +214,12 @@ class Tee:
     def flush(self):
         self.stdout.flush()
         self.file.flush()
+        
+    def isatty(self):
+        return self.stdout.isatty()
 
-
-    """ import sys
-
-    class Tee:
-        def __init__(self, filename):
-            self.file = open(filename, "w")
-            self.stdout = sys.__stdout__
-
-        def write(self, data):
-            self.file.write(data)
-            self.stdout.write(data)
-
-        def flush(self):
-            self.file.flush()
-            self.stdout.flush()
-
-    sys.stdout = Tee(log_file)
-    sys.stderr = Tee(log_file)
- """
+    def fileno(self):
+        return self.stdout.fileno()
 
 
 

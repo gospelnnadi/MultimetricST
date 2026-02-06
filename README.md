@@ -42,7 +42,7 @@ python download_repo.py
 ````
 
 
-Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install) environment
+Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions) (version>=23.11.0 is recommend) environment.
 `````
 conda create -n MMST -y
 
