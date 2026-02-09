@@ -63,10 +63,14 @@ methods = [
 comp_cost = []
 def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='Visium',n_clusters=7,decimal=4):
   comp_cost = []
+  print("show subset_methods 2",  subset_methods)
+
   if subset_methods is None or subset_methods == ["all"]:
         methods_to_run = methods
   else:
+        print("show subset_methods3 ", subset_methods)
         methods_to_run = [(n, f) for n, f in methods if n in subset_methods]
+        print(f"Selected methods: {[n for n, _ in methods_to_run]}")
   for method_name, method_func in methods_to_run:
     
     print(f"\n\nRunning {method_name}...\n\n\n\n\n")

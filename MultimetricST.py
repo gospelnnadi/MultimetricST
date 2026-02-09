@@ -258,7 +258,7 @@ def main(args):
     # Mode 1: Full pipeline - run clustering, evaluation, and dashboard
     if args.mode == 1:
         print("Running Mode 1: Full pipeline")
-        run_full_pipeline(args,adata_raw,data_name,data_type=args.data_type,n_clusters=args.n_clusters)
+        run_full_pipeline(args,adata_raw,data_name,subset_methods=args.subset_methods,data_type=args.data_type,n_clusters=args.n_clusters)
         print("Full pipeline completed.")
     
     # Mode 2: Evaluation and visualization only
@@ -275,7 +275,7 @@ def main(args):
 
 
 
-def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n_components=20, random_seed=35,):
+def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Visium',n_clusters=7,n_components=20, random_seed=35,):
     """
     Execute Mode 1: Run clustering, evaluation, and visualization.
     """
@@ -286,7 +286,7 @@ def run_full_pipeline(args,adata_raw,data_name,data_type='Visium',n_clusters=7,n
         print("Running clustering pipeline...")
         
         # Run clustering and get cluster labels
-        adata, comp_cost = run_clustering_pipeline(adata_raw.copy(),data_name,data_type='Visium',n_clusters=n_clusters)
+        adata, comp_cost = run_clustering_pipeline(adata_raw.copy(),data_name,subset_methods=subset_methods,data_type='Visium',n_clusters=n_clusters)
         
         # Import and run evaluation module
         from Evaluate.evaluate import evaluate_cluster
