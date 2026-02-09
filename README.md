@@ -115,6 +115,7 @@ The framework supports **three execution modes**, controlled by a user-specified
 
 3. **Visualization only**  
    Visualizes results from a user-provided CSV file containing precomputed evaluation scores.
+   The dashboard can be accessed via browser on http://localhost:5006/
 
 Each mode requires a different set of input data, consistent with the manuscript description.
 

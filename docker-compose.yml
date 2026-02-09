@@ -2,7 +2,6 @@
 services:
   mmst:
     image: gospelnnadi1/mmst:v1.0
-    network_mode: host
     container_name: mmst_container
     ports:
       - "5006:5006"   # host:container

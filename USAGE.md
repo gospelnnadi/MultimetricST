@@ -107,7 +107,7 @@ python MultimetricST.py \\<br>
   --data_path Data/DLPFC/151673 \\<br>
   --is_h5ad 0 \\<br>
   --data_type Visium \\<br>
-  --cluster_label_path clustering_labels.csv \\<br>
+  --cluster_label_path multimetricST_outputs/clustering_labels.csv \\<br>
   --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
   --ground_truth_col_name layer_guess &
@@ -129,15 +129,15 @@ Example 5: Visualize precomputed evaluation results
 
 python MultimetricST.py \\<br>
   --mode 3 \\<br>
-  --result_savepath clustering_results.csv  &
+  --result_savepath multimetricST_outputs/clustering_results.csv  &
 
 Example 6: Visualization with spatial plots
 
 python MultimetricST.py \\<br>
   --mode 3 \\<br>
   --data_path Data/DLPFC/151673 \\<br>
-  --result_savepath clustering_results.csv \\<br>
-  --cluster_label_path clustering_labels.csv \\<br>
+  --result_savepath multimetricST_outputs/clustering_results.csv \\<br>
+  --cluster_label_path multimetricST_outputs/clustering_labels.csv \\<br>
   --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \\<br>
   --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
   --ground_truth_col_name layer_guess &
