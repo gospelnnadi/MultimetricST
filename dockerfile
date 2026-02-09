@@ -56,6 +56,18 @@ RUN conda install python=3.10 r-base=4.3.1 r-essentials rpy2=3.5.11 somoclu=1.7.
 ENV R_HOME=/root/miniconda3/envs/MMST/lib/R
 ENV LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
 
+# Use bash login shell so conda works
+SHELL ["/bin/bash", "--login", "-c"]
+
+# Auto-activate MMST for every shell and process
+RUN echo "conda activate MMST" >> ~/.bashrc
+
+# Force all processes to use MMST python first
+ENV PATH=/root/miniconda3/envs/MMST/bin:$PATH
+ENV CONDA_DEFAULT_ENV=MMST
+ENV CONDA_PREFIX=/root/miniconda3/envs/MMST
+
+
 
 # Install PyTorch and PyTorch Geometric
 RUN pip install torch==2.1.0 \
