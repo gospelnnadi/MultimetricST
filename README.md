@@ -129,7 +129,18 @@ New Python-based methods can be added by:
 
 - adding the GitHub URL to Spatial_Clustering_Methods/repos_git.txt
 
-- implementing a method-specific run function
+- Implementing a method-specific `run` function following the structure in  
+  `Spatial_Clustering_Methods/run<MethodName>.py`
+
+All added spatial domain method repositories are executed through their respective `run` functions using **default parameters**.  
+
+Users can customize and tune method-specific parameters by modifying the corresponding `run` function for each method.
+
+`MultimetricST.py` allows users to specify dataset-specific parameters (e.g., **Visium**, **Slide**, **Stereo**, **Xenium**) through the `--data_type` argument. This parameter is passed to each method when required.
+
+Using the `--subset_method` parameter, users can define a subset of methods to be executed, evaluated, and visualized when running **Mode 1**.
+
+
 
 ### Known Compatibility Notes
 

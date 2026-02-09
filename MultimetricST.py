@@ -534,6 +534,9 @@ if __name__ == '__main__':
     # Core execution parameters
     parser.add_argument("--mode", type=int, default=1, choices=[1, 2, 3],
                        help="Execution mode: (1) full pipeline, (2) evaluation and visualization only, (3) visualization only from precomputed scores")
+    parser.add_argument("--subset_methods",nargs='+', default=["all"], 
+                       help="provide a list of methods to subset the model execution, evaluation and visualization. E.g., GIST GraphST SEDR. Default is all methods")
+    
     
     # Data input parameters
     parser.add_argument("--data_path", type=str, default="",
@@ -542,7 +545,7 @@ if __name__ == '__main__':
                        help="Dataset Name. Can be: 151673 (DLPFC slice) or Mouse_Kidney etc. ")
     
     parser.add_argument("--data_type", type=str, default='Visium',
-                       help="Data technology Visium, Stereo, Slide. Default is Visium")
+                       help="Data technology Visium, Stereo, Slide, Xenium. Default is Visium")
     parser.add_argument("--is_h5ad", type=int, default=0, choices=[0, 1],
                        help="Data is in h5ad format (1) or not (0). Default is 0 for Visium data folder")
     
