@@ -28,7 +28,10 @@ The framework is organized into **three main components**:
 These components can be executed **independently or sequentially** via a single command-line:
 
 # Setup
-Setup notes: setup supported on Linux platform.
+Setup notes: 
+The conda setup is supported on Linux platform. 
+
+We also provide the setup on containerized environment using docker, the details are available in [README-Docker.md](README-Docker.md)
 
 install MultimetricST package.
 ````
@@ -40,7 +43,9 @@ Download packages of the spatial transcriptomics spatial domain identification m
 ````
 python download_repo.py
 ````
+Repositories will be stored in:
 
+MultimetricST/Spatial_Clustering_Methods/
 
 Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions) (version>=23.11.0 is recommend) environment.
 `````
@@ -79,6 +84,25 @@ Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https:/
 ````
 
 
+### Data Availability ###
+The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
+
+Download the DLPFC 151673 data:
+
+        wget https://zenodo.org/records/18482658/files/Data.zip
+        unzip Data.zip
+        rm Data.zip
+
+Download the Axolotl dataset:
+
+        wget https://zenodo.org/records/18482658/files/Stereo.zip
+        unzip Stereo.zip -d Data/
+        rm Stereo.zip
+
+
+For detailed command-line usage and dataset-specific examples, see [View Usage Documentation](USAGE.md).
+
+
 ## Execution Modes
 
 The framework supports **three execution modes**, controlled by a user-specified parameter:
@@ -112,21 +136,30 @@ New Python-based methods can be added by:
 The following change is required for compatibility. `download_repo.py` modifies the spatial domain identification method `SEDR` file: MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py, line 52 is commented in order to use the r-base in the created conda environment (MMST). 
 
 
+### Information on the conda installation.
+To ensure reproducibilty and easier setup we provide the conda quick installation
 
-### Data Availability ###
-The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
+#### Install Miniconda
+   ````
+    mkdir -p ~/miniconda3
+      wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
+   bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+   rm ~/miniconda3/miniconda.sh
+    ````
 
-Download the DLPFC 151673 data:
+Make conda available
+````
+source ~/miniconda3/bin/activate
+````
+Verify conda installation
+```` 
+conda --version
+```` 
+#### Initialize conda
+````
+ conda init --all
 
-        wget https://zenodo.org/records/18482658/files/Data.zip
-        unzip Data.zip
-        rm Data.zip
-
-Download the Axolotl dataset:
-
-        wget https://zenodo.org/records/18482658/files/Stereo.zip
-        unzip Stereo.zip -d Data/
-        rm Stereo.zip
-
-
-For detailed command-line usage and dataset-specific examples, see [View Usage Documentation](USAGE.md).
+ conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
+ conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
+ conda config --add channels conda-forge
+````
