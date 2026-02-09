@@ -6,7 +6,7 @@ services:
     container_name: mmst_container
     restart: unless-stopped
     volumes:
-      - ./workspace:/workspace   # Mount current folder into container
+      - .:/workspace   # Mount current folder into container
     working_dir: /workspace
     tty: true
     stdin_open: true
