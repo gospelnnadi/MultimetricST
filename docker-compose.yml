@@ -2,6 +2,7 @@
 services:
   mmst:
     image: gospelnnadi1/mmst:v1.0
+    network_mode: host
     container_name: mmst_container
     restart: unless-stopped
     volumes:
