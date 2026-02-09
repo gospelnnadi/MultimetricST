@@ -1,0 +1,16 @@
+version: "3.9"
+
+services:
+  mmst:
+    image: gospelnnadi1/mmst:v1.0
+    container_name: mmst_container
+    restart: unless-stopped
+    volumes:
+      - ./workspace:/workspace   # Mount current folder into container
+    working_dir: /workspace
+    tty: true
+    stdin_open: true
+    environment:
+      - R_HOME=/opt/conda/envs/MMST/lib/R
+      - R_LIBS_USER=/opt/conda/envs/MMST/lib/R/library
+      - R_LIBS=
