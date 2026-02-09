@@ -45,5 +45,5 @@ distributed==2024.4.2
 python-igraph==0.10.6 
 zarr==2.16.1
 ipykernel
-setuptools 
+setuptools<81
 wheel
