@@ -136,9 +136,9 @@ All added spatial domain method repositories are executed through their respecti
 
 Users can customize and tune method-specific parameters by modifying the corresponding `run` function for each method.
 
-`MultimetricST.py` allows users to specify dataset-specific parameters (e.g., **Visium**, **Slide**, **Stereo**, **Xenium**) through the `--data_type` argument. This parameter is passed to each method when required.
+`MultimetricST.py` allows users to specify dataset-specific parameters (e.g., **Visium**, **Slide**, **Stereo**, **Xenium**, **CosMx**, **VisiumHD**) through the `--data_type` argument. This parameter is passed to each method when required.
 
-Using the `--subset_method` parameter, users can define a subset of methods to be executed, evaluated, and visualized when running **Mode 1**.
+Using the `--subset_methods` parameter, users can define a subset of methods to be executed, evaluated, and visualized when running **Mode 1**.
 
 
 

@@ -47,25 +47,17 @@ RUN conda tos accept --override-channels --channel https://repo.anaconda.com/pkg
 RUN conda config --add channels conda-forge
 
 
+# Set working dir
+WORKDIR /workspace
+VOLUME /workspace
+# Copy project
+COPY . /workspace
+
 #Create and activate conda environment
 RUN conda create -n MMST -y 
 SHELL ["conda", "run", "-n", "MMST", "/bin/bash", "-c"]
 
 RUN conda install python=3.10 r-base=4.3.1 r-essentials rpy2=3.5.11 somoclu=1.7.5 -y
-
-ENV R_HOME=/root/miniconda3/envs/MMST/lib/R
-ENV LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
-
-# Use bash login shell so conda works
-SHELL ["/bin/bash", "--login", "-c"]
-
-# Auto-activate MMST for every shell and process
-RUN echo "conda activate MMST" >> ~/.bashrc
-
-# Force all processes to use MMST python first
-ENV PATH=/root/miniconda3/envs/MMST/bin:$PATH
-ENV CONDA_DEFAULT_ENV=MMST
-ENV CONDA_PREFIX=/root/miniconda3/envs/MMST
 
 
 
@@ -80,11 +72,6 @@ RUN pip install torch_sparse -f https://data.pyg.org/whl/torch-2.1.0+cu121.html 
     torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
 
 RUN pip install torch-geometric==2.7.0
-
-# Copy MultimetricST code into the container
-WORKDIR /workspace
-COPY . /workspace
-
 #Install Python requirements
 RUN pip install -r requirements.txt
 
@@ -92,13 +79,20 @@ RUN pip install -r requirements.txt
 RUN Rscript -e 'install.packages("remotes", repos="https://cran.r-project.org")' && \
     Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https://cran.r-project.org")'
 
-# Expose a working directory for data
-VOLUME /workspace
 
-# Clean conda caches
-RUN conda clean -a -y && \
-    rm -rf /root/miniconda3/pkgs
+# Auto-activate MMST for every shell and process
+RUN echo "conda activate MMST" >> ~/.bashrc
+# Force all processes to use MMST python first
+ENV PATH=/root/miniconda3/envs/MMST/bin:$PATH
+ENV CONDA_PREFIX=/root/miniconda3/envs/MMST
+ENV CONDA_DEFAULT_ENV=MMST
 
-# Remove pip cache
-RUN rm -rf /root/.cache/pip
+
+ENV R_HOME=/root/miniconda3/envs/MMST/lib/R
+ENV LD_LIBRARY_PATH=$R_HOME/lib:$LD_LIBRARY_PATH
+
+
+
+# Clean caches
+RUN conda clean -a -y && rm -rf /root/.cache/pip
 
