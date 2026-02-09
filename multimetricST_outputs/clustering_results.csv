@@ -1,2 +1,0 @@
-method,exec_time,peak_memory,ARI,AMI,Purity,Homogeneity,Completeness,V-Measure,Silhouette-Spatial,Average-Dispersion,Silhouette,Davies-Bouldin,CHAOS,PAS,ASW
-SpaGCN,71.8381,1168.7276,0.3765,0.5215,0.6004,0.5316,0.5146,0.523,0.0563,0.1852,0.1567,2.7127,6.222,0.0857,0.0599

@@ -83,3 +83,10 @@ RUN Rscript -e 'install.packages("remotes", repos="https://cran.r-project.org")'
 # Expose a working directory for data
 VOLUME /workspace
 
+# Clean conda caches
+RUN conda clean -a -y && \
+    rm -rf /root/miniconda3/pkgs
+
+# Remove pip cache
+RUN rm -rf /root/.cache/pip
+

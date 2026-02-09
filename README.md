@@ -52,7 +52,7 @@ conda activate MMST
 
 `````
 `````
-conda install python=3.10.0 r-base=4.3.1 rpy2=3.5.11  r-essentials somoclu=1.7.5 -y 
+conda install -c conda-forge python=3.10.0 r-base=4.3.1 rpy2=3.5.11  r-essentials somoclu=1.7.5 -y 
 
 `````
 
