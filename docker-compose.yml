@@ -4,6 +4,8 @@ services:
     image: gospelnnadi1/mmst:v1.0
     network_mode: host
     container_name: mmst_container
+    ports:
+      - "5006:5006"   # host:container
     restart: unless-stopped
     volumes:
       - .:/workspace   # Mount current folder into container

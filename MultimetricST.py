@@ -520,7 +520,7 @@ def run_dashboard(result_savepath, plot_savepath=None ):
         print("Launching dashboard...")
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
-        dashboard.show()
+        dashboard.show(address="0.0.0.0",port=5006)
     except Exception as e:
         print(f"Error launching dashboard: {str(e)}")
         raise
