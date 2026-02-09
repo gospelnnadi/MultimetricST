@@ -11,6 +11,8 @@ services:
     tty: true
     stdin_open: true
     environment:
-      - R_HOME=/opt/conda/envs/MMST/lib/R
-      - R_LIBS_USER=/opt/conda/envs/MMST/lib/R/library
-      - R_LIBS=
+      - R_HOME=/root/miniconda3/envs/MMST/lib/R
+      - R_LIBS_USER=/root/miniconda3/envs/MMST/lib/R/library
+      - R_LIBS=/root/miniconda3/envs/MMST/lib/R/library
+      - PATH=/root/miniconda3/envs/MMST/bin:/root/miniconda3/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
