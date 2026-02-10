@@ -42,7 +42,7 @@ def fix_known_incompactibilities():
       
         text = spaceflow_file.read_text()
 
-        old_line = "sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes,flavor='cell_ranger', subset=True)"
+        old_line = "sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, flavor='cell_ranger', subset=True)"
         new_line = "sc.pp.highly_variable_genes(adata, n_top_genes=n_top_genes, subset=True)"
 
         if old_line in text:
