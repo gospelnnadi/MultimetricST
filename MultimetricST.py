@@ -510,6 +510,19 @@ def load_from_file_csv_tsv_npy(args,path, col_name="annotation"):
     else:
         raise ValueError(f"Unsupported file format for cluster labels: { path}")
 
+def release_port():
+    import psutil
+
+    PORT = 5006
+
+    for proc in psutil.process_iter(['pid', 'name']):
+        for conn in proc.connections(kind='inet'):
+            if conn.laddr.port == PORT:
+                print(f"Killing PID {proc.pid} ({proc.name()}) using port {PORT}")
+                proc.kill()
+    print(f"Port {PORT} is now free.")
+
+
 def run_dashboard(result_savepath, plot_savepath=None ):
     """
     Run the dashboard visualization module.
@@ -520,6 +533,7 @@ def run_dashboard(result_savepath, plot_savepath=None ):
         print("Launching dashboard...")
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
+        release_port()  # Ensure port is free before launching
         dashboard.show(address="0.0.0.0",port=5006)
     except Exception as e:
         print(f"Error launching dashboard: {str(e)}")

@@ -145,7 +145,13 @@ Using the `--subset_methods` parameter, users can define a subset of methods to 
 
 ### Known Compatibility Notes
 
-The following change is required for compatibility. `download_repo.py` modifies the spatial domain identification method `SEDR` file: MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py, line 52 is commented in order to use the r-base in the created conda environment (MMST). 
+The following modifications are automatically applied for compatibility within the MultimetricST environment:
+   - **SEDR**  
+         `download_repo.py` modifies the file `MultimetricST/Spatial_Clustering_Methods/SEDR/SEDR/clustering_func.py` by commenting out **line 52**. This change ensures compatibility with the **r-base** installation provided in the MMST Conda environment.
+
+   - **SpaceFlow**  To resolve the error: "ValueError: Bin edges must be unique" which arises from the use of highly variable gene selection with `flavor='cell_ranger'`, the default parameter setting is used instead.  
+ `download_repo.py` modifies the file `MultimetricST/Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py` (line 132).
+
 
 
 ### Information on the conda installation.
