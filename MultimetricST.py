@@ -529,11 +529,11 @@ def run_dashboard(result_savepath, plot_savepath=None ):
     """
     try:
         from Visualize_Scores.dashboard import create_dashboard
-        
+        release_port()  # Ensure port is free before launching
         print("Launching dashboard...")
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
-        release_port()  # Ensure port is free before launching
+        
         dashboard.show(address="0.0.0.0",port=5006)
     except Exception as e:
         print(f"Error launching dashboard: {str(e)}")
