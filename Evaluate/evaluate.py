@@ -113,7 +113,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         AMI = np.round(AMI, decimal)
 
         # Purity Score: sum of max over rows in contingency matrix / total
-        purity = metrics.cluster.contingency_matrix(ground_truth, pred).max(axis=1).sum() / len(ground_truth)
+        purity = metrics.cluster.contingency_matrix(ground_truth, pred).max(axis=0).sum() / len(ground_truth)
         purity = np.round(purity, decimal)
 
         # Homogeneity Score
