@@ -534,7 +534,9 @@ def run_dashboard(result_savepath, plot_savepath=None ):
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
         
-        dashboard.show(address="0.0.0.0",port=5006)
+        dashboard.show(address="0.0.0.0",port=5006, websocket_origin="*",
+        session_token_expiration=3600*24  # 24 hour expiration for session tokens
+    )
     except Exception as e:
         print(f"Error launching dashboard: {str(e)}")
         raise
