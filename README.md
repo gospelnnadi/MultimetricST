@@ -27,11 +27,26 @@ The framework is organized into **three main components**:
 
 These components can be executed **independently or sequentially** via a single command-line:
 
-# Setup
-Setup notes: 
-The conda setup is supported on Linux platform. 
+### Execution Modes
 
-We also provide the setup on containerized environment using docker, the details are available in [README-Docker.md](README-Docker.md)
+The framework supports **three execution modes**, controlled by a user-specified parameter:
+
+1. **Full pipeline** 
+   Runs method execution (`Spatial_Clustering_Methods/clustering.py`), cluster evaluation (`Evaluate/evaluate.py`), and result visualization (`Visualize_Scores/dashboard.py`).
+
+2. **Evaluation + visualization**  
+   Executes only cluster evaluation and dashboard visualization using precomputed cluster labels.
+
+3. **Visualization only**  
+   Visualizes results from a user-provided CSV file containing precomputed evaluation scores.
+   
+
+Each mode requires a different set of input data, consistent with the manuscript description.
+
+
+
+
+# Setup
 
 install MultimetricST package.
 ````
@@ -43,11 +58,22 @@ Download packages of the spatial transcriptomics spatial domain identification m
 ````
 python download_repo.py
 ````
+If python not installed. 
+````
+sudo apt install python3-pip
+````
+````
+python3 download_repo.py 
+````
 Repositories will be stored in:
 
 MultimetricST/Spatial_Clustering_Methods/
 
-Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions) (version>=23.11.0 is recommend) environment.
+
+## Setup - Conda 
+The conda setup is supported on Linux platform. 
+
+Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions) (version>=23.11.0 is recommend) environment. A conda quick install is also availabe in the install Miniconda section below.
 `````
 conda create -n MMST -y
 
@@ -56,14 +82,11 @@ conda create -n MMST -y
 conda activate MMST  
 
 `````
-`````
-conda install -c conda-forge python=3.10.0 r-base=4.3.1 rpy2=3.5.11  r-essentials somoclu=1.7.5 -y 
-
-`````
 
  ### install dependencies
 
 ````
+conda install -c conda-forge python=3.10.0 r-base=4.3.1 rpy2=3.5.11  r-essentials somoclu=1.7.5 -y 
 pip install torch==2.1.0 
 
 pip install torch_sparse -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
@@ -73,10 +96,7 @@ pip install torch_spline_conv -f https://data.pyg.org/whl/torch-2.1.0+cu121.html
 
 pip install torch-geometric==2.7.0 torchaudio==2.1.0 torchvision==0.16.0 
 pip install -r requirements.txt
-````
 
-Install mclust clustering algorithms used by some of the spatial transcriptomics spatial domain identification methods.
-````
 Rscript -e 'install.packages("remotes", repos="https://cran.r-project.org")'
 
 Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https://cran.r-project.org")'
@@ -84,7 +104,21 @@ Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https:/
 ````
 
 
-### Data Availability ###
+## Setup - Docker 
+Setup on containerized environment using docker. To use the mmst container install [Docker](https://www.docker.com/) (version>=28.4.0 is recommend) and [Docker Compose] (https://docs.docker.com/compose/).
+
+### Start the MultimetricST container
+Get the mmst container with docker compose.
+`````
+docker-compose up -d
+`````
+Verify the container image.
+````` 
+docker images
+`````
+
+
+# Data Availability 
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
 
 Download the DLPFC 151673 data:
@@ -100,26 +134,68 @@ Download the Axolotl dataset:
         rm Stereo.zip
 
 
-For detailed command-line usage and dataset-specific examples, see [View Usage Documentation](USAGE.md).
+if unzip not installed.
+````
+sudo apt-get install zip unzip
+````
+
+# Usage
+##  Usage - Conda environment
+Within the conda MMST environment (that is, conda activate MMST ). 
+
+Download the DLPFC 10X Visium dataset found in the data availability section.
+Execute the following command.
+
+`````
+python MultimetricST.py \\<br>
+  --mode 1 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess \\<br>
+  --data_name 151673 \\<br>
+  --is_h5ad 0 \\<br>
+  --data_type Visium \\<br>
+  --n_clusters 7 \\<br>
+  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+`````
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+
+For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
+
+## Usage - Docker environment 
+Access the container environment.
+`````
+docker-compose exec mmst bash
+`````
+`````
+python MultimetricST.py \\<br>
+  --mode 1 \\<br>
+  --data_path Data/DLPFC/151673 \\<br>
+  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+  --ground_truth_col_name layer_guess \\<br>
+  --data_name 151673 \\<br>
+  --is_h5ad 0 \\<br>
+  --data_type Visium \\<br>
+  --n_clusters 7 \\<br>
+  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+  `````
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+
+For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
+
+To exit the container environment. 
+`````
+Ctrl+D
+`````
+To stop the container.
+`````
+docker-compose down
+`````
 
 
-## Execution Modes
-
-The framework supports **three execution modes**, controlled by a user-specified parameter:
-
-1. **Full pipeline** 
-   Runs method execution (`clustering.py`), cluster evaluation (`evaluate.py`), and result visualization (`dashboard.py`).
-
-2. **Evaluation + visualization**  
-   Executes only cluster evaluation and dashboard visualization using precomputed cluster labels.
-
-3. **Visualization only**  
-   Visualizes results from a user-provided CSV file containing precomputed evaluation scores.
-   The dashboard can be accessed via browser on http://localhost:5006/
-
-Each mode requires a different set of input data, consistent with the manuscript description.
 
 
+# Notes
 ### Notes on Method Execution
 
 using the `download_repo.py` method repositories are cloned automatically into MultimetricST/Spatial_Clustering_Methods/
@@ -132,6 +208,8 @@ New Python-based methods can be added by:
 
 - Implementing a method-specific `run` function following the structure in  
   `Spatial_Clustering_Methods/run<MethodName>.py`
+
+- Import the `run` function into `Spatial_Clustering_Methods/clustering.py` and add to the list of methods following the structure in `Spatial_Clustering_Methods/clustering.py`
 
 All added spatial domain method repositories are executed through their respective `run` functions using **default parameters**.  
 
