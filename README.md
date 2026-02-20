@@ -105,7 +105,7 @@ Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https:/
 ````
 
 
-## Setup Option 2- Docker 
+## Setup Option 2 - Docker 
 Setup on containerized environment using docker. To use the mmst container install [Docker](https://www.docker.com/) (version>=28.4.0 is recommend) and [Docker Compose] (https://docs.docker.com/compose/).
 
 ### Start the MultimetricST container
