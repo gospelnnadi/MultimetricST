@@ -47,6 +47,7 @@ Each mode requires a different set of input data, consistent with the manuscript
 
 
 # Setup
+We provide reproducibile setup environment option using conda or containerized environment using docker. Users can choose their preferred setup option.
 
 install MultimetricST package.
 ````
@@ -70,7 +71,7 @@ Repositories will be stored in:
 MultimetricST/Spatial_Clustering_Methods/
 
 
-## Setup - Conda 
+## Setup Option 1 - Conda 
 The conda setup is supported on Linux platform. 
 
 Create a [conda](https://www.anaconda.com/docs/getting-started/miniconda/install#quickstart-install-instructions) (version>=23.11.0 is recommend) environment. A conda quick install is also availabe in the install Miniconda section below.
@@ -104,7 +105,7 @@ Rscript -e 'remotes::install_version("mclust", version = "6.0.1", repos="https:/
 ````
 
 
-## Setup - Docker 
+## Setup Option 2- Docker 
 Setup on containerized environment using docker. To use the mmst container install [Docker](https://www.docker.com/) (version>=28.4.0 is recommend) and [Docker Compose] (https://docs.docker.com/compose/).
 
 ### Start the MultimetricST container
