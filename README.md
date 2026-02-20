@@ -118,6 +118,64 @@ docker images
 `````
 
 
+# Usage
+##  Usage - Conda environment
+Within the conda MMST environment (that is, conda activate MMST ). 
+
+Download the DLPFC 10X Visium dataset found in the data availability section.
+Execute the following command.
+
+`````
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151673 \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name 151673 \
+  --is_h5ad 0 \
+  --data_type Visium \
+  --n_clusters 7 \
+  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+`````
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+
+For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
+
+## Usage - Docker environment 
+Access the container environment.
+`````
+docker-compose exec mmst bash
+`````
+
+Download the DLPFC 10X Visium dataset found in the data availability section.
+Execute the following command.
+`````
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151673 \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name 151673 \
+  --is_h5ad 0 \
+  --data_type Visium \
+  --n_clusters 7 \
+  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+  `````
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+
+For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
+
+To exit the container environment. 
+`````
+Ctrl+D
+`````
+To stop the container.
+`````
+docker-compose down
+`````
+
+
+
 # Data Availability 
 The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
 
@@ -138,61 +196,6 @@ if unzip not installed.
 ````
 sudo apt-get install zip unzip
 ````
-
-# Usage
-##  Usage - Conda environment
-Within the conda MMST environment (that is, conda activate MMST ). 
-
-Download the DLPFC 10X Visium dataset found in the data availability section.
-Execute the following command.
-
-`````
-python MultimetricST.py \\<br>
-  --mode 1 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
-  --ground_truth_col_name layer_guess \\<br>
-  --data_name 151673 \\<br>
-  --is_h5ad 0 \\<br>
-  --data_type Visium \\<br>
-  --n_clusters 7 \\<br>
-  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
-`````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
-
-For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
-
-## Usage - Docker environment 
-Access the container environment.
-`````
-docker-compose exec mmst bash
-`````
-`````
-python MultimetricST.py \\<br>
-  --mode 1 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
-  --ground_truth_col_name layer_guess \\<br>
-  --data_name 151673 \\<br>
-  --is_h5ad 0 \\<br>
-  --data_type Visium \\<br>
-  --n_clusters 7 \\<br>
-  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
-  `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
-
-For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
-
-To exit the container environment. 
-`````
-Ctrl+D
-`````
-To stop the container.
-`````
-docker-compose down
-`````
-
-
 
 
 # Notes

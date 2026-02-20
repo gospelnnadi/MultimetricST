@@ -40,28 +40,28 @@ Mode 1 – Full Pipeline Examples.
 Example 1: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
 Execute the following command to run all available spatial domain identification methods described in the paper or use --subset_methods to execute on a subset of methods.
 `````
-python MultimetricST.py \\<br>
-  --mode 1 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
-  --ground_truth_col_name layer_guess \\<br>
-  --data_name 151673 \\<br>
-  --is_h5ad 0 \\<br>
-  --data_type Visium \\<br>
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151673 \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name 151673 \
+  --is_h5ad 0 \
+  --data_type Visium \
   --n_clusters 7 &
 `````
 
 Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
 Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
 `````
-python MultimetricST.py \\<br>
-  --mode 1 \\<br> 
-  --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad \\<br>
-  --ground_truth ground_truth \\<br>
-  --is_h5ad 1 \\<br>
-  --data_name Axolotl_Brain \\<br>
-  --data_type Stereo \\<br>
-  --plot_size 35  \\<br>
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/Stereo/Stereo_Axolotl_Brain.h5ad \
+  --ground_truth ground_truth \
+  --is_h5ad 1 \
+  --data_name Axolotl_Brain \
+  --data_type Stereo \
+  --plot_size 35  \
   --n_clusters 8 &
 `````
 
@@ -92,25 +92,25 @@ Mode 2 – Evaluation + Visualization Examples.
 
 Example 3: Evaluate cluster labels stored in adata.obs
 `````
-python MultimetricST.py \\<br>
-  --mode 2 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --is_h5ad 0 \\<br>
-  --data_type Visium \\<br>
-  --method_cluster_label CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/DLPFC/151673 \
+  --is_h5ad 0 \
+  --data_type Visium \
+  --method_cluster_label CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
  `````
 Example 4: Evaluate cluster labels from CSV file
 `````
-python MultimetricST.py \\<br>
-  --mode 2 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --is_h5ad 0 \\<br>
-  --data_type Visium \\<br>
-  --cluster_label_path multimetricST_outputs/clustering_labels.csv \\<br>
-  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/DLPFC/151673 \
+  --is_h5ad 0 \
+  --data_type Visium \
+  --cluster_label_path multimetricST_outputs/clustering_labels.csv \
+  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
 `````
 
@@ -128,19 +128,19 @@ Optional
 Mode 3 – Visualization Only Examples
 Example 5: Visualize precomputed evaluation results
 
-python MultimetricST.py \\<br>
-  --mode 3 \\<br>
+python MultimetricST.py \
+  --mode 3 \
   --result_savepath multimetricST_outputs/clustering_results.csv  &
 
 Example 6: Visualization with spatial plots
 `````
-python MultimetricST.py \\<br>
-  --mode 3 \\<br>
-  --data_path Data/DLPFC/151673 \\<br>
-  --result_savepath multimetricST_outputs/clustering_results.csv \\<br>
-  --cluster_label_path multimetricST_outputs/clustering_labels.csv \\<br>
-  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \\<br>
-  --ground_truth Data/DLPFC/151673/metadata.tsv \\<br>
+python MultimetricST.py \
+  --mode 3 \
+  --data_path Data/DLPFC/151673 \
+  --result_savepath multimetricST_outputs/clustering_results.csv \
+  --cluster_label_path multimetricST_outputs/clustering_labels.csv \
+  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
+  --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
 `````
 
