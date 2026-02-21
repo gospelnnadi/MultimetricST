@@ -159,7 +159,8 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     np.save(f'{params.save_path}/conST_result.npy', conST_embedding)
     # clustering
     adata_conST = anndata.AnnData(conST_embedding)
-    adata_conST.uns['spatial'] = adata.uns['spatial']
+    if "spatial" in adata.uns:
+        adata_conST.uns['spatial'] = adata.uns['spatial']
     adata_conST.obsm['spatial'] = adata.obsm['spatial']
 
     sc.pp.neighbors(adata_conST, n_neighbors=params.eval_graph_n)

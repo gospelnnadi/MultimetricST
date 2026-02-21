@@ -191,7 +191,7 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
     generated_data_fold = args.generated_data_path + args.data_name+'/'
     if not os.path.exists(generated_data_fold):
         os.makedirs(generated_data_fold)
-    
+    args.Dim_PCA = min(args.Dim_PCA, adata.shape[1]-1)
     features = adata_preprocess(adata, min_cells=args.min_cells, pca_n_comps=args.Dim_PCA)
     #gene_ids = adata_h5.var['gene_ids']
     coordinates = adata.obsm['spatial']
@@ -217,6 +217,7 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
         os.makedirs(args.result_path) 
     print ('------------------------Model and Training Details--------------------------')
     print(args) 
+    
 
     lambda_I = args.lambda_I
     # Parameters
@@ -267,7 +268,8 @@ def run (adata ,data_name,data_type='Visium',n_clusters=7):
 
      
     adata_spatial = ad.AnnData(X_embedding)
-    adata_spatial.uns['spatial']=adata.uns['spatial']
+    if "spatial" in adata.uns:
+        adata_spatial.uns["spatial"] = adata.uns["spatial"]
     adata_spatial.obsm['spatial']=adata.obsm['spatial']
 
     """ gt=adata.obs['Region'].tolist()

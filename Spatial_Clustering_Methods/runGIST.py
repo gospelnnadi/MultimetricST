@@ -48,8 +48,8 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     start_time = time.time()
     tracemalloc.start()
     
-
-    GISTModel=GIST(adata=adata,  device=device, random_seed=seed, data_type=data_type)
+    emb_size = min(32, adata.shape[1]-1)
+    GISTModel=GIST(adata=adata,  device=device, emb_size=emb_size, random_seed=seed, data_type=data_type)
     adata=GISTModel.train()
 
     current, peak = tracemalloc.get_traced_memory()

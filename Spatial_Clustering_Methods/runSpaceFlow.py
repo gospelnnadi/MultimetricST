@@ -44,7 +44,7 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     #preprocess
     sf.preprocessing_data(n_top_genes=3000)
 
-    adata.obsm['SpaceFlow_embedding']=sf.train(embedding_save_filepath="../../embedding.tsv")
+    adata.obsm['SpaceFlow_embedding']=sf.train(embedding_save_filepath="../dlpfc/embedding.tsv")
     current, peak = tracemalloc.get_traced_memory()
     end_time = time.time()
     tracemalloc.stop()

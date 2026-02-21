@@ -39,8 +39,9 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     adata = adata[:, adata.var['highly_variable'] == True]
     sc.pp.scale(adata)
 
+    n_comp = min(200, adata.shape[1]-1)
     # sklearn PCA is used because PCA in scanpy is not stable.
-    adata_X = PCA(n_components=200, random_state=42).fit_transform(adata.X)
+    adata_X = PCA(n_components=n_comp, random_state=42).fit_transform(adata.X)
     adata.obsm['X_pca'] = adata_X
     graph_dict = SEDR.graph_construction(adata, 12)
 

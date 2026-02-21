@@ -162,8 +162,8 @@ def validate_arguments(args):
         
             if args.cluster_label_path and not os.path.exists(args.cluster_label_path):
                 sys.exit(f"Error: Cluster label file {args.cluster_label_path} not found")
-            elif not os.path.exists(args.result_savepath):
-                sys.exit(f"Error: Result scores file {args.result_savepath} not found")
+            elif not os.path.exists(f"{ROOT}/multimetricST_outputs/{args.result_filename}"):
+                sys.exit(f"Error: Result scores file {ROOT}/multimetricST_outputs/{args.result_filename} not found")
                 
         return True
     
@@ -254,6 +254,28 @@ def main(args):
             ground_truth = np.array(ground_truth)
             ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
         adata_raw.obs['ground_truth']=ground_truth
+    elif args.ground_truth in adata_raw.obs: 
+        ground_truth = adata_raw.obs[args.ground_truth]
+        if isinstance(ground_truth, (pd.DataFrame, pd.Series)):
+            ground_truth = ground_truth.replace(np.nan, "-1")
+        elif isinstance(ground_truth, np.ndarray):
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
+        else:
+            # Fallback: if it's a list or other type
+            ground_truth = np.array(ground_truth)
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
+        adata_raw.obs['ground_truth']=ground_truth
+
+        adata_raw.obs["ground_truth"] = (
+             pd.Series(ground_truth)
+                .astype("category")
+                .cat.codes
+                .add(1)
+                .astype(str)
+                .values
+                )
+        print("gound_truth dim", ground_truth.shape)
+        
 
     # Mode 1: Full pipeline - run clustering, evaluation, and dashboard
     if args.mode == 1:
@@ -333,7 +355,7 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
 
         # Convert to DataFrame
         results_df = pd.DataFrame(results) #.round(4)
-        result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
+        result_savepath=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
         results_df.to_csv(result_savepath,  index=False)
         for col in adata.obs.columns:
             if adata.obs[col].dtype == 'object':
@@ -416,7 +438,7 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
 
         # Convert to DataFrame
         results_df = pd.DataFrame(results).round(4)
-        result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
+        result_savepath=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
         results_df.to_csv(result_savepath,  index=False)
 
         print("Evaluation results saved.")
@@ -440,6 +462,7 @@ def run_visualization_only(args,adata_raw,data_name):
         # or provided through additional arguments
         
         # Load cluster labels if provided for spatial visualization
+        file_path=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
         cluster_labels = None
         if args.visual_tissue and args.cluster_label_path and os.path.exists(args.cluster_label_path):
             cluster_labels = load_from_file_csv_tsv_npy(args,args.cluster_label_path, args.cluster_label_col_names)
@@ -447,8 +470,8 @@ def run_visualization_only(args,adata_raw,data_name):
             for col in cluster_labels.columns:
                 adata_raw.obs[col] = cluster_labels[col]
         
-        elif args.result_savepath and os.path.exists(args.result_savepath):
-            args.method_cluster_label  = load_from_file_csv_tsv_npy(args,args.result_savepath, None)
+        elif file_path and os.path.exists(file_path):
+            args.method_cluster_label  = load_from_file_csv_tsv_npy(args,file_path, None)
             print("Using method_cluster_label from precomputed results for visualization")
             args.method_cluster_label = args.method_cluster_label['method'].tolist()
             print(" show methods_cluster_label ", args.method_cluster_label)
@@ -473,10 +496,11 @@ def run_visualization_only(args,adata_raw,data_name):
 
         # Convert to DataFrame
         
-        #result_savepath=f"{ROOT}/multimetricST_outputs/clustering_results.csv"
+        result_savepath=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
         print("Running dashboard visualization...")
         # Run dashboard visualization
-        run_dashboard(args.result_savepath, plot_savepath )
+        run_dashboard(result_savepath, plot_savepath )
+        
 
     except Exception as e:
         print(f"Error in visualization-only execution: {str(e)}")
@@ -595,9 +619,9 @@ if __name__ == '__main__':
     # Visualization parameters
     parser.add_argument("--plot_size", type=int, default=0,
                        help="Tissue spatial plot size. Set to 0 when histology image is available in adata")
-    parser.add_argument("--result_savepath", type=str, default="", 
-                       help="Full path to precomputed clustering results CSV file (required for Mode 3)")
-    
+    parser.add_argument("--result_filename", type=str, default="clustering_results.csv", 
+                       help="CSV file name of precomputed clustering results (required for Mode 3), optional for Mode 1 and 2. . The defualt is clustering_results.csv. The file should be saved placed in MultimetricST/multimetricST_outputs/ for Mode 3. The computed results with Mode 1 and 2 will be saved in the same folder.")
+  
     args = parser.parse_args()
     main(args)
 

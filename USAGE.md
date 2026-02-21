@@ -130,14 +130,14 @@ Example 5: Visualize precomputed evaluation results
 
 python MultimetricST.py \
   --mode 3 \
-  --result_savepath multimetricST_outputs/clustering_results.csv  &
+  --result_filename clustering_results.csv  &
 
 Example 6: Visualization with spatial plots
 `````
 python MultimetricST.py \
   --mode 3 \
   --data_path Data/DLPFC/151673 \
-  --result_savepath multimetricST_outputs/clustering_results.csv \
+  --result_filename clustering_results.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
   --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
   --ground_truth Data/DLPFC/151673/metadata.tsv \

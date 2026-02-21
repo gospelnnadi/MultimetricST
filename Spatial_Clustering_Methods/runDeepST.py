@@ -69,7 +69,9 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7,use_morphological=False
   
 
     ###### Enhanced data preprocessing
-    data = deepen._data_process(adata, pca_n_comps = 200)
+    n_comp = min(200, adata.shape[1]-1)
+
+    data = deepen._data_process(adata, pca_n_comps = n_comp)
 
     ###### Training models
     deepst_embed = deepen._fit(

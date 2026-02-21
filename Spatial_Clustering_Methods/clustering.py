@@ -72,13 +72,20 @@ def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='V
   for method_name, method_func in methods_to_run:
     
     print(f"\n\nRunning {method_name}...\n\n\n\n\n")
-    cluster_label,finaltime, peak_mem = method_func(adata_raw.copy(),data_name,data_type=data_type,n_clusters=7)
-    adata_raw.obs[method_name]=np.array(cluster_label).astype(str)
-    result = {
+    try:
+        cluster_label,finaltime, peak_mem = method_func(adata_raw.copy(),data_name,data_type=data_type,n_clusters=7)
+        adata_raw.obs[method_name]=np.array(cluster_label).astype(str)
+        result = {
         "method": method_name,
         "exec_time": finaltime,
         "peak_memory": peak_mem
-    }
-    comp_cost.append(result)
+        }
+        comp_cost.append(result)
+    except Exception as e:
+        print(f"⚠️ WARNING: {method_name} failed with error:")
+        print(e)
+        print("\n\nContinuing with next method...\n\n")
+        continue
+
   print(f"\n\n{subset_methods} methods have been executed.\n\n")
   return adata_raw, comp_cost
