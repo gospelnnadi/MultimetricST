@@ -60,8 +60,8 @@ methods = [
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)
 ]
-comp_cost = []
-def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='Visium',n_clusters=7,decimal=4):
+
+""" def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='Visium',n_clusters=7,decimal=4):
   comp_cost = []
 
   if subset_methods is None or subset_methods == ["all"]:
@@ -88,4 +88,113 @@ def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='V
         continue
 
   print(f"\n\n{subset_methods} methods have been executed.\n\n")
-  return adata_raw, comp_cost
+  return adata_raw, comp_cost """
+
+
+
+
+import multiprocessing as mp
+import numpy as np
+import traceback
+
+
+def _run_single_method(queue, method_name, method_func,
+                       adata_raw, data_name, data_type, n_clusters):
+    """
+    Worker executed in a subprocess.
+    """
+    try:
+        cluster_label, finaltime, peak_mem = method_func(
+            adata_raw.copy(),
+            data_name,
+            data_type=data_type,
+            n_clusters=n_clusters
+        )
+
+        queue.put({
+            "status": "ok",
+            "method": method_name,
+            "cluster_label": np.array(cluster_label).astype(str),
+            "exec_time": finaltime,
+            "peak_memory": peak_mem
+        })
+
+    except Exception as e:
+        queue.put({
+            "status": "error",
+            "method": method_name,
+            "error": str(e),
+            "traceback": traceback.format_exc()
+        })
+
+
+def run_clustering_pipeline(adata_raw,
+                            data_name,
+                            subset_methods=None,
+                            data_type='Visium',
+                            n_clusters=7,
+                            decimal=4,
+                            timeout=None):
+    
+    comp_cost = []
+
+    if subset_methods is None or subset_methods == ["all"]:
+        methods_to_run = methods
+    else:
+        methods_to_run = [(n, f) for n, f in methods if n in subset_methods]
+
+    for method_name, method_func in methods_to_run:
+
+        print(f"\n\nRunning {method_name}...\n\n")
+
+        queue = mp.Queue()
+
+        p = mp.Process(
+            target=_run_single_method,
+            args=(queue, method_name, method_func,
+                  adata_raw, data_name, data_type, n_clusters)
+        )
+
+        p.start()
+        p.join(timeout)
+
+        # Timeout handling
+        if p.is_alive():
+            print(f"⚠️ WARNING: {method_name} timeout — killing process")
+            p.terminate()
+            p.join()
+            continue
+
+        # Read result
+        if queue.empty():
+            print(f"⚠️ WARNING: {method_name} returned nothing")
+            continue
+
+        result = queue.get()
+
+        if result["status"] == "ok":
+            try:
+                adata_raw.obs[method_name] = result["cluster_label"]
+
+                comp_cost.append({
+                    "method": method_name,
+                    "exec_time": result["exec_time"],
+                    "peak_memory": result["peak_memory"]
+                })
+
+            except Exception as e:
+                print(f"⚠️ WARNING: Failed saving results for {method_name}")
+                print(e)
+
+        else:
+            print(f"⚠️ WARNING: {method_name} failed")
+            print(result["error"])
+            print(result["traceback"])
+
+        # Force memory cleanup
+        del p
+        del queue
+
+    print(f"\n\n{subset_methods} methods have been executed.\n\n")
+
+    return adata_raw, comp_cost

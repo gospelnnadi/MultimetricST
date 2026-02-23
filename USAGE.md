@@ -38,20 +38,21 @@ AnnData object containing:
 Mode 1 – Full Pipeline Examples. 
 
 Example 1: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
-Execute the following command to run all available spatial domain identification methods described in the paper or use --subset_methods to execute on a subset of methods.
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods.
 `````
 python MultimetricST.py \
   --mode 1 \
   --data_path Data/DLPFC/151673 \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess \
-  --data_name 151673 \
+  --data_name DLPFC_151673 \
   --is_h5ad 0 \
+  --result_filename clustering_results_DLPFC_151673.csv \
   --data_type Visium \
   --n_clusters 7 &
 `````
 
-Example 2: Visium data stored as .h5ad. Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
+Example 2: Download the Stereo Seq Axolotl Brain dataset found in the data availability section (see [README](README.md)).
 Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
 `````
 python MultimetricST.py \
@@ -60,6 +61,7 @@ python MultimetricST.py \
   --ground_truth ground_truth \
   --is_h5ad 1 \
   --data_name Axolotl_Brain \
+  --result_filename clustering_results_Axolotl_Brain.csv \
   --data_type Stereo \
   --plot_size 35  \
   --n_clusters 8 &
@@ -97,6 +99,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --is_h5ad 0 \
   --data_type Visium \
+  --result_filename clustering_results_DLPFC_151673.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
@@ -108,6 +111,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --is_h5ad 0 \
   --data_type Visium \
+  --result_filename clustering_results_DLPFC_151673.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
   --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
@@ -126,18 +130,20 @@ Optional
 
 
 Mode 3 – Visualization Only Examples
-Example 5: Visualize precomputed evaluation results
 
+Example 5: Visualize precomputed evaluation results
+`````
 python MultimetricST.py \
   --mode 3 \
   --result_filename clustering_results.csv  &
+`````
 
 Example 6: Visualization with spatial plots
 `````
 python MultimetricST.py \
   --mode 3 \
   --data_path Data/DLPFC/151673 \
-  --result_filename clustering_results.csv \
+  --result_filename clustering_results_DLPFC_151673.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
   --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
@@ -280,3 +286,147 @@ MOSTA embryo sections require a very small plotting size due to their extremely 
 ---
 
 The `n_cluster` values are derived from the biological annotations when available in the datasets. Advanced users can set different parameters to explore alternative biological assumptions or benchmarking scenarios.
+
+
+## More Examples 
+Mode 1 – Full Pipeline. 
+
+Example 3: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods.
+`````
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151674 \
+  --ground_truth Data/DLPFC/151674/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name DLPFC_151674 \
+  --is_h5ad 0 \
+  --result_filename clustering_results_DLPFC_151674.csv \
+  --data_type Visium \
+  --n_clusters 7 &
+`````
+
+Example 4: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods.
+`````
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151669 \
+  --ground_truth Data/DLPFC/151669/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name DLPFC_151669 \
+  --is_h5ad 0 \
+  --result_filename clustering_results_DLPFC_151669.csv \
+  --data_type Visium \
+  --n_clusters 5 &
+`````
+
+Example 5: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods.
+`````
+python MultimetricST.py \
+  --mode 1 \
+  --data_path Data/DLPFC/151508 \
+  --ground_truth Data/DLPFC/151508/metadata.tsv \
+  --ground_truth_col_name layer_guess \
+  --data_name DLPFC_151508 \
+  --is_h5ad 0 \
+  --result_filename clustering_results_DLPFC_151508.csv \
+  --data_type Visium \
+  --n_clusters 7 &
+`````
+
+
+
+Example 6: Download the Mouse_Brain_Anterior 10X Visium dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. 
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/Mouse_Brain_Anterior \
+  --ground_truth Data/Mouse_Brain_Anterior/metadata.tsv \
+  --ground_truth_col_name ground_truth \
+  --is_h5ad 0 \
+  --data_name Mouse_Brain_Anterior \
+  --data_type Visium \
+  --result_filename clustering_results_Mouse_Brain_Anterior.csv \
+  --plot_size 0  \
+  --n_clusters 52 &
+`````
+
+Example 7: Download the STARmap dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/STARmap_mouse_visual_cortex/STARmap_20180505_BY3_1k.h5ad \
+  --ground_truth label \
+  --is_h5ad 1 \
+  --data_name Mouse_Visual_Cortex \
+  --data_type STARmap \
+  --result_filename clustering_results_Mouse_Visual_Cortex.csv \
+  --plot_size 250  \
+  --n_clusters 7 &
+`````
+
+
+Example 8: Download the BaristerSeq dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/BaristerSeq-Mouse-Primary-Cortex/BaristerSeq_Mouse_Primary_Cortex.h5ad \
+  --ground_truth ground_truth \
+  --is_h5ad 1 \
+  --data_name Mouse_Primary_Cortex \
+  --data_type BaristerSeq \
+  --result_filename clustering_results_BaristerSeq_Mouse_Primary_Cortex.csv \
+  --plot_size 15  \
+  --n_clusters 6 &
+`````
+
+Example 9: Download the MOSTA StereoSeq dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/StereoSeq-MOSTA-Mouse_Organogenesis_Spatiotemporal_Transcriptomic_Atlas/E10.5_E2S1.MOSTA.h5ad \
+  --ground_truth annotation \
+  --is_h5ad 1 \
+  --data_name MOSTA_E10_5_E2S1 \
+  --data_type Stereo \
+  --result_filename clustering_results_MOSTA_E10_5_E2S1.csv \
+  --plot_size 1  \
+  --n_clusters 18 &
+`````
+
+
+Example 10: Download the MOSTA StereoSeq dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/StereoSeq-MOSTA-Mouse_Organogenesis_Spatiotemporal_Transcriptomic_Atlas/E11.5_E1S1.MOSTA.h5ad \
+  --ground_truth annotation \
+  --is_h5ad 1 \
+  --data_name MOSTA_E11_5_E1S1 \
+  --data_type Stereo \
+  --result_filename clustering_results_MOSTA_E11_5_E1S1.csv \
+  --plot_size 1  \
+  --n_clusters 19 &
+`````
+
+
+Example 10: Download the Xenium dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/Xenium/ms_brain_partialcoronal.h5ad \
+  --is_h5ad 1 \
+  --data_name Xenium_Mouse_Brain_Partial_Coronal \
+  --data_type Xenium \
+  --result_filename clustering_results_Xenium_Mouse_Brain_Partial_Coronal.csv \
+  --plot_size 10  \
+  --n_clusters 20 &
+`````

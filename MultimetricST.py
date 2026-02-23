@@ -239,42 +239,76 @@ def main(args):
         adata_raw, dir_path, data_name = get_adata_from_path(args.data_path, args.is_h5ad)
     else:
         adata_raw=get_adata_from_exp_spatial_path(args.mode , args.expression_path, args.spatial_path)
-        data_name=args.data_name
+    data_name=args.data_name
     print("adata_raw dim", adata_raw.shape)
     if os.path.exists(args.ground_truth):
         ground_truth=load_from_file_csv_tsv_npy(args,args.ground_truth, args.ground_truth_col_name)
-        print("gound_truth dim", ground_truth.shape)
+        print("ground_truth dim", ground_truth.shape)
         # Handle different possible data types (NumPy array or pandas DataFrame/Series)
         if isinstance(ground_truth, (pd.DataFrame, pd.Series)):
-            ground_truth = ground_truth.replace(np.nan, "-1")
+
+            ground_truth =ground_truth.replace(["NA", "nan", ""], "-1")
+            ground_truth = np.asarray(ground_truth.replace(np.nan, "-1")).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
         elif isinstance(ground_truth, np.ndarray):
-            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
+            ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
         else:
             # Fallback: if it's a list or other type
             ground_truth = np.array(ground_truth)
-            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
-        adata_raw.obs['ground_truth']=ground_truth
+            ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
+
+        print("ground_truth unique", np.unique(ground_truth))
+        adata_raw.obs["ground_truth"] = ground_truth.astype(str)
     elif args.ground_truth in adata_raw.obs: 
         ground_truth = adata_raw.obs[args.ground_truth]
         if isinstance(ground_truth, (pd.DataFrame, pd.Series)):
-            ground_truth = ground_truth.replace(np.nan, "-1")
+            ground_truth =ground_truth.replace(["NA", "nan", ""], "-1")
+            ground_truth = np.asarray(ground_truth.replace(np.nan, "-1")).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
         elif isinstance(ground_truth, np.ndarray):
-            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
+            ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
         else:
             # Fallback: if it's a list or other type
             ground_truth = np.array(ground_truth)
-            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth)
+            ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
+            ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
+            ground_truth = (
+            pd.Series(ground_truth)
+            .astype("category")
+            .cat.codes + 1
+            ).to_numpy()
         adata_raw.obs['ground_truth']=ground_truth
 
-        adata_raw.obs["ground_truth"] = (
-             pd.Series(ground_truth)
-                .astype("category")
-                .cat.codes
-                .add(1)
-                .astype(str)
-                .values
-                )
-        print("gound_truth dim", ground_truth.shape)
+        adata_raw.obs["ground_truth"] = ground_truth.astype(str)
+        print("ground_truth dim", ground_truth.shape)
+        print("ground_truth unique", np.unique(ground_truth))
+      
         
 
     # Mode 1: Full pipeline - run clustering, evaluation, and dashboard
@@ -320,13 +354,14 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
         os.makedirs(plot_savepath, exist_ok=True)
         if 'ground_truth' in adata.obs:
             ground_truth =adata.obs['ground_truth'] 
-            print("gound truth was detcted in anndata and will be used for evaluation")
+            print("ground truth was detcted in anndata and will be used for evaluation")
             method='ground_truth'
             print(f"Saving {method} cluster plot to {plot_savepath}")
             plot_label(adata, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
+            print(f"Saved {method} cluster plot")
         else: 
             ground_truth=None
-            print("gound truth was detcted in anndata and will be used for evaluation")
+            print("ground truth was detcted in anndata and will be used for evaluation")
         
         # PCA matrix
         pca_matrix = adata.obsm["X_pca"]
@@ -339,10 +374,10 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
         for m in comp_cost:
             method=m['method']
             # Clusters from adata
-            print(f"Evaluating clustering results...{method}")
+            print(f"\n\nEvaluating clustering results...{method}\n\n")
             pred = adata.obs[method]
             # Keep only spots present in adata
-
+     
             scores=evaluate_cluster( adata,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
             
             # Merge metrics and computational cost into one record
@@ -350,9 +385,9 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
 
             # Append to list
             results.append(m)
-            print(f"Saving {method} cluster plot to {plot_savepath}")
+            print(f"\n\nSaving {method} cluster plot to {plot_savepath}\n\n")
             plot_label(adata, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
-
+            print(f"Saved {method} cluster plot")
         # Convert to DataFrame
         results_df = pd.DataFrame(results) #.round(4)
         result_savepath=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
@@ -403,13 +438,14 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         os.makedirs(plot_savepath, exist_ok=True)
         if 'ground_truth' in adata_raw.obs:
             ground_truth =adata_raw.obs['ground_truth'] 
-            print("gound truth was detcted in anndata and will be used for evaluation")
+            print("ground truth was detcted in anndata and will be used for evaluation")
             method='ground_truth'
             print(f"Saving {method} cluster plot to {plot_savepath}")
             plot_label(adata_raw, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
+            print(f"Saved {method} cluster plot")
         else: 
             ground_truth=None
-            print("gound truth was detcted in anndata and will be used for evaluation") 
+            print("ground truth was detcted in anndata and will be used for evaluation") 
         
         # PCA matrix
         pca_matrix = adata_raw.obsm["X_pca"]
@@ -418,13 +454,15 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         else:
             is_visium=False
         results=[]
-        print("Evaluating clustering results...")
         for method in args.method_cluster_label:
             if method not in adata_raw.obs:
                 print(f"Warning: Method {method} not found in adata.obs. Skipping evaluation and plot.")
                 continue
+            else: 
+                print(f"\n\nEvaluating clustering results...{method}\n\n")
             # Clusters from adata
             pred = adata_raw.obs[method]
+           
             scores=evaluate_cluster( adata_raw,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
             
                 # Merge metrics and computational cost into one record
@@ -433,8 +471,9 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
 
             # Append to list
             results.append(m)
-            print(f"Saving {method} cluster plot to {plot_savepath}")
+            print(f"\n\nSaving {method} cluster plot to {plot_savepath}\n\n")
             plot_label(adata_raw, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
+            print(f"Saved {method} cluster plot")
 
         # Convert to DataFrame
         results_df = pd.DataFrame(results).round(4)
@@ -484,12 +523,14 @@ def run_visualization_only(args,adata_raw,data_name):
             method='ground_truth'
             print(f"Saving {method} cluster plot to {plot_savepath}")
             plot_label(adata_raw, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}" )
+            print(f"Saved {method} cluster plot")
         
         if args.method_cluster_label and adata_raw is not None:
             for method in args.method_cluster_label:
                 print(f"Saving {method} cluster plot to {plot_savepath}")
                 if method in adata_raw.obs:
                     plot_label(adata_raw, plot_size=args.plot_size, key=method, savepath=f"{plot_savepath}/{method}"  )
+                    print(f"Saved {method} cluster plot")
                 else:
                     print(f"Warning: Method {method} not found in adata.obs. Skipping plot.")
       
@@ -581,7 +622,7 @@ if __name__ == '__main__':
     # Data input parameters
     parser.add_argument("--data_path", type=str, default="",
                        help="Full path to the data object. Can be: Data/DLPFC/151673 (folder) or Data/MK.h5ad (file)")
-    parser.add_argument("--data_name", type=str, default="151673",
+    parser.add_argument("--data_name", type=str, default="DLPFC_151673",
                        help="Dataset Name. Can be: 151673 (DLPFC slice) or Mouse_Kidney etc. ")
     
     parser.add_argument("--data_type", type=str, default='Visium',

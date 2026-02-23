@@ -113,6 +113,7 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     start_time = time.time()
     tracemalloc.start()
     
+    params.cell_feat_dim = min(params.cell_feat_dim,  adata.shape[1]-1)
     adata_X = adata_preprocess(adata, min_cells=5, pca_n_comps=params.cell_feat_dim)
     graph_dict = graph_construction(adata.obsm['spatial'], adata.shape[0], params)
     os.makedirs("../input", exist_ok=True)

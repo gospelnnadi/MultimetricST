@@ -3,7 +3,7 @@
 import scanpy as sc
 import numpy as np
 import pandas as pd
-from GIST.utils.clustering import cluster_n_plot
+from GIST.utils.clustering import *
 from GIST.GIST import GIST
 import torch
 import time
@@ -40,16 +40,19 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     device =  "cuda" if torch.cuda.is_available() else "cpu"
 
     seed=35
-    data_type=data_type
-    refinement=True
+
+    if data_type == 'Visium':
+        refinement=True
+    else: 
+        refinement=False
+
     adata_raw=adata.copy()
 
     # Start measuring time and memory
     start_time = time.time()
     tracemalloc.start()
     
-    emb_size = min(32, adata.shape[1]-1)
-    GISTModel=GIST(adata=adata,  device=device, emb_size=emb_size, random_seed=seed, data_type=data_type)
+    GISTModel=GIST(adata=adata,  device=device, random_seed=seed, data_type=data_type)
     adata=GISTModel.train()
 
     current, peak = tracemalloc.get_traced_memory()
@@ -63,7 +66,11 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     print(f"Current memory usage: {current} MB")
     print(f"Peak memory usage: {peak} MB")  
 
-    cluster_n_plot(adata, f"../../GIST/figures/outputs/{data_name}.png", n_clusters,refinement=refinement, seed=seed, is_visium=GISTModel.is_visium)
+    adata = clustering_method(adata, num_cluster=n_clusters,refinement=refinement, seed=seed)
+    #plot_cluster(adata, f"outputs/{data_name}.png", plot_size=plot_size)
+    #evaluate_cluster(adata, is_visium=GISTModel.is_visium)
+
+ 
     # Isolated spots are not considered in the clustering. If necessary copy the cluster label in the raw adata 
     adata_raw.obs['cluster']='-1'
     common = adata.obs_names.intersection(adata_raw.obs_names)

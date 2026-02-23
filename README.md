@@ -132,7 +132,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess \
-  --data_name 151673 \
+  --data_name DLPFC_151673 \
   --is_h5ad 0 \
   --data_type Visium \
   --n_clusters 7 \
@@ -156,7 +156,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess \
-  --data_name 151673 \
+  --data_name DLPFC_151673 \
   --is_h5ad 0 \
   --data_type Visium \
   --n_clusters 7 \
@@ -178,20 +178,20 @@ docker-compose down
 
 
 # Data Availability 
-The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18482658
+The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18745782
 
 Download the DLPFC 151673 data:
-
-        wget https://zenodo.org/records/18482658/files/Data.zip
+````
+        wget https://zenodo.org/records/18745782/files/Data.zip
         unzip Data.zip
         rm Data.zip
-
+````
 Download the Axolotl dataset:
-
-        wget https://zenodo.org/records/18482658/files/Stereo.zip
+````
+        wget https://zenodo.org/records/18745782/files/Stereo.zip
         unzip Stereo.zip -d Data/
         rm Stereo.zip
-
+````
 
 if unzip not installed.
 ````
@@ -235,30 +235,31 @@ The following modifications are automatically applied for compatibility within t
  `download_repo.py` modifies the file `MultimetricST/Spatial_Clustering_Methods/SpaceFlow/SpaceFlow/SpaceFlow.py` (line 132).
 
 
-
 ### Information on the conda installation.
 To ensure reproducibilty and easier setup we provide the conda quick installation
 
 #### Install Miniconda
    ````
-    mkdir -p ~/miniconda3
+      mkdir -p ~/miniconda3
       wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh -O ~/miniconda3/miniconda.sh
-   bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
-   rm ~/miniconda3/miniconda.sh
-    ````
+      bash ~/miniconda3/miniconda.sh -b -u -p ~/miniconda3
+      rm ~/miniconda3/miniconda.sh
+   ````
 
 Make conda available
 ````
 source ~/miniconda3/bin/activate
 ````
+
 Verify conda installation
 ```` 
 conda --version
 ```` 
+
 #### Initialize conda
+
 ````
  conda init --all
-
  conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/main
  conda tos accept --override-channels --channel https://repo.anaconda.com/pkgs/r
  conda config --add channels conda-forge
