@@ -49,24 +49,7 @@ from runSpaceFlow import run as runSpaceFlow
 
 import pandas as pd
 import numpy as np
-""" ("HERGAST", runHERGAST),  
-    ("SCAN-IT", runScanIT),  
-    ("SEDR", runSEDR),  
-    ("SpaceFlow", runSpaceFlow),
-    ("STAGATE", runSTAGATE)  
-    
-    
-    ("DeepST", runDeepST) ,
-    ("CCST", runCCST),
-    ("conST", runConST),
-    ("GIST", runGIST), 
-    ("GraphST", runGraphST), 
-    ("HERGAST", runHERGAST),  
-    ("SCAN-IT", runScanIT),  
-    ("SEDR", runSEDR),  
-    ("SpaceFlow", runSpaceFlow) ,
-    ("SpaGCN", runSpaGCN), 
-    ("STAGATE", runSTAGATE)   """
+"""  """
 methods = [ 
     ("DeepST", runDeepST) ,
     ("CCST", runCCST),
@@ -80,37 +63,6 @@ methods = [
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)
 ]
-
-""" def run_clustering_pipeline(adata_raw,data_name,subset_methods=None,data_type='Visium',n_clusters=7,decimal=4):
-  comp_cost = []
-
-  if subset_methods is None or subset_methods == ["all"]:
-        methods_to_run = methods
-  else:
-    
-        methods_to_run = [(n, f) for n, f in methods if n in subset_methods]
-  for method_name, method_func in methods_to_run:
-    
-    print(f"\n\nRunning {method_name}...\n\n\n\n\n")
-    try:
-        cluster_label,finaltime, peak_mem = method_func(adata_raw.copy(),data_name,data_type=data_type,n_clusters=7)
-        adata_raw.obs[method_name]=np.array(cluster_label).astype(str)
-        result = {
-        "method": method_name,
-        "exec_time": finaltime,
-        "peak_memory": peak_mem
-        }
-        comp_cost.append(result)
-    except Exception as e:
-        print(f"⚠️ WARNING: {method_name} failed with error:")
-        print(e)
-        print("\n\nContinuing with next method...\n\n")
-        continue
-
-  print(f"\n\n{subset_methods} methods have been executed.\n\n")
-  return adata_raw, comp_cost """
-
-
 
 
 import multiprocessing as mp
@@ -177,17 +129,7 @@ def run_clustering_pipeline(adata_raw,
         )
 
         p.start()
-        #p.join(timeout) 
-         
-        # Wait for process to finish
-        #p.join()
 
-        #if p.exitcode != 0:
-        #    print(f"⚠️ {method_name} crashed (exitcode={p.exitcode})")
-        #    continue
-        
-
-        # Read result
         try:
             result = queue.get()
         except Exception as e:
