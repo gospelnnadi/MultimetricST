@@ -13,6 +13,7 @@ method_dirs = [
     "DeepST",
     #"GraphST",
     "GIST",
+    "HERGAST",
     "SEDR",
     "SpaGCN",
     "STAGATE_pyG",
@@ -37,6 +38,7 @@ sys.path.append(ROOT)
 from runDeepST import run as runDeepST
 from runGraphST import run as runGraphST
 from runGIST import run as runGIST
+from runHERGAST import run as runHERGAST 
 from runSEDR import run as runSEDR 
 from runSpaGCN import run as runSpaGCN
 from runSTAGATE import run as runSTAGATE 
@@ -47,15 +49,33 @@ from runSpaceFlow import run as runSpaceFlow
 
 import pandas as pd
 import numpy as np
-"""   """
+""" ("HERGAST", runHERGAST),  
+    ("SCAN-IT", runScanIT),  
+    ("SEDR", runSEDR),  
+    ("SpaceFlow", runSpaceFlow),
+    ("STAGATE", runSTAGATE)  
+    
+    
+    ("DeepST", runDeepST) ,
+    ("CCST", runCCST),
+    ("conST", runConST),
+    ("GIST", runGIST), 
+    ("GraphST", runGraphST), 
+    ("HERGAST", runHERGAST),  
+    ("SCAN-IT", runScanIT),  
+    ("SEDR", runSEDR),  
+    ("SpaceFlow", runSpaceFlow) ,
+    ("SpaGCN", runSpaGCN), 
+    ("STAGATE", runSTAGATE)   """
 methods = [ 
     ("DeepST", runDeepST) ,
     ("CCST", runCCST),
     ("conST", runConST),
     ("GIST", runGIST), 
     ("GraphST", runGraphST), 
-    ("SCAN-IT", runScanIT), 
-    ("SEDR", runSEDR),
+    ("HERGAST", runHERGAST),  
+    ("SCAN-IT", runScanIT),  
+    ("SEDR", runSEDR),  
     ("SpaceFlow", runSpaceFlow) ,
     ("SpaGCN", runSpaGCN), 
     ("STAGATE", runSTAGATE)
@@ -104,8 +124,8 @@ def _run_single_method(queue, method_name, method_func,
     Worker executed in a subprocess.
     """
     try:
-        cluster_label, finaltime, peak_mem = method_func(
-            adata_raw.copy(),
+        cluster_label, finaltime, peak_mem, allocated, cached = method_func(
+            adata_raw,
             data_name,
             data_type=data_type,
             n_clusters=n_clusters
@@ -116,7 +136,9 @@ def _run_single_method(queue, method_name, method_func,
             "method": method_name,
             "cluster_label": np.array(cluster_label).astype(str),
             "exec_time": finaltime,
-            "peak_memory": peak_mem
+            "peak_memory": peak_mem,
+            "GPU_exec_time":cached,
+            "GPU_peak_memory":  allocated
         })
 
     except Exception as e:
@@ -133,8 +155,7 @@ def run_clustering_pipeline(adata_raw,
                             subset_methods=None,
                             data_type='Visium',
                             n_clusters=7,
-                            decimal=4,
-                            timeout=None):
+                            decimal=4):
     
     comp_cost = []
 
@@ -152,26 +173,42 @@ def run_clustering_pipeline(adata_raw,
         p = mp.Process(
             target=_run_single_method,
             args=(queue, method_name, method_func,
-                  adata_raw, data_name, data_type, n_clusters)
+                  adata_raw.copy(), data_name, data_type, n_clusters)
         )
 
         p.start()
-        p.join(timeout)
+        #p.join(timeout) 
+         
+        # Wait for process to finish
+        #p.join()
 
-        # Timeout handling
-        if p.is_alive():
-            print(f"⚠️ WARNING: {method_name} timeout — killing process")
-            p.terminate()
-            p.join()
-            continue
+        #if p.exitcode != 0:
+        #    print(f"⚠️ {method_name} crashed (exitcode={p.exitcode})")
+        #    continue
+        
 
         # Read result
-        if queue.empty():
+        try:
+            result = queue.get()
+        except Exception as e:
             print(f"⚠️ WARNING: {method_name} returned nothing")
             continue
 
-        result = queue.get()
+        """  if queue.empty():
+            print(f"⚠️ WARNING: {method_name} returned nothing")
+            continue 
+        if p.exitcode != 0:
+            print(f"⚠️ {method_name} crashed (exitcode={p.exitcode})")
+            continue"""
+        # Skip if child returned None
+        if result is None:
+            print(f"⚠️ WARNING: {method_name} returned nothing")
+            continue
 
+        # Wait for process to finish
+        p.join()
+
+        
         if result["status"] == "ok":
             try:
                 adata_raw.obs[method_name] = result["cluster_label"]
@@ -179,9 +216,11 @@ def run_clustering_pipeline(adata_raw,
                 comp_cost.append({
                     "method": method_name,
                     "exec_time": result["exec_time"],
-                    "peak_memory": result["peak_memory"]
+                    "peak_memory": result["peak_memory"],
+                    "GPU_exec_time": result["GPU_exec_time"],
+                    "GPU_peak_memory": result["GPU_peak_memory"]
                 })
-
+                
             except Exception as e:
                 print(f"⚠️ WARNING: Failed saving results for {method_name}")
                 print(e)

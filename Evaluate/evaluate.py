@@ -28,7 +28,7 @@ import tracemalloc
 
 
 
-def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium=False,verbose=True,decimal=4):
+def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium=False,verbose=True,decimal=4, external_metrics=True, internal_metrics=True):
   
     """
     Evaluate clustering performance using both traditional and spatially-aware metrics.
@@ -62,7 +62,11 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
 
     decimal : int, optional (default: 4)
         Number of decimal places to round metric values.
-
+    
+    external_metrics : bool, optional (default: True)
+        Whether to compute external clustering metrics (ARI, AMI, Purity, Homogeneity, Completeness, V-measure). Set to False if external metrics are not needed or ground truth is unavailable.
+    internal_metrics : bool, optional (default: True)
+        Whether to compute internal clustering metrics (Silhouette-Spatial, Average-Dispersion, Silhouette, Davies-Bouldin, CHAOS, PAS, ASW). Set to False if internal metrics are not needed.
     Returns
     -------
     metrics_dict : dict
@@ -93,8 +97,10 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     >>> scores = evaluate_cluster(adata=adata, pred=y_pred, ground_truth=y_true, pca_matrix=pca, is_visium=False)
     >>> print(scores["ARI"], scores["SSC], scores["CHAOS"])
     """
+
     start_time = time.time()
     tracemalloc.start()
+    metrics_dict = {}
     # If no PCA matrix is provided, use adata.X (convert from sparse if necessary)
     if pca_matrix is None:
         if issparse(adata.X):
@@ -103,7 +109,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
             pca_matrix = adata.X
 
     # Initialize scores
-    if ground_truth is not None and len(ground_truth):
+    if ground_truth is not None and len(ground_truth) and external_metrics:
         # Adjusted Rand Index (ARI)
         ARI = metrics.adjusted_rand_score(ground_truth, pred)
         ARI = np.round(ARI, decimal)
@@ -127,12 +133,21 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         # V-measure (harmonic mean of homogeneity and completeness)
         v_measure = metrics.v_measure_score(ground_truth, pred)
         v_measure = np.round(v_measure, decimal)
+        """ metrics_dict.append({
+        "ARI": ARI,
+        "AMI":  AMI, 
+        "Purity": purity, 
+        "Homogeneity": homogeneity, 
+        "Completeness": completeness,
+        "V-Measure":  v_measure
+        }) """
+    
     else:
         # Fallback to 0 if no valid ground truth
-        ARI, AMI, purity, homogeneity, completeness, v_measure = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        ARI, AMI, purity, homogeneity, completeness, v_measure = None, None, None, None, None, None
 
     # Compute clustering metrics if at least 2 clusters are present
-    if len(np.unique(pred)) > 1:
+    if len(np.unique(pred)) > 1 and internal_metrics:
         # Spatial silhouette coefficient (custom metric considering spatial info)
         silhouette_spatial = silhouette_spatial_score(pca_matrix, pred, adata, metric="cosine", is_visium=is_visium)
         silhouette_spatial = np.round(silhouette_spatial, decimal)
@@ -159,10 +174,19 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         # ASW: average spatial within-cluster distance
         ASW = compute_ASW(pred, adata.obsm['spatial'])
         ASW = np.round(ASW, decimal)
+        """ metrics_dict.append({
+        "Silhouette-Spatial": silhouette_spatial, 
+        "Average-Dispersion": penalty, 
+        "Silhouette": silhouette, 
+        "Davies-Bouldin": davies_bouldin,
+        "CHAOS":  chaos, 
+        "PAS": pas, 
+        "ASW": ASW
+    }) """
 
     else:
         # Fallback values for single-cluster predictions
-        silhouette_spatial, penalty, silhouette, davies_bouldin, chaos, pas, ASW = 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0
+        silhouette_spatial, penalty, silhouette, davies_bouldin, chaos, pas, ASW = None,None, None, None, None, None, None
         print("Cluster size is less than 2")
 
     current, peak = tracemalloc.get_traced_memory()
@@ -172,8 +196,8 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     current=f"{current / 10**6:.4f}"
     peak=f"{peak / 10**6:.4f}"
     print(f"Evaluation runtime: {finaltime} seconds")
-    print(f"Current memory usage: {current} MB")
-    print(f"Peak memory usage: {peak} MB")
+    print(f"Evaluation Current memory usage: {current} MB")
+    print(f"Evaluation Peak memory usage: {peak} MB")
     # Print metrics if verbose mode is on
     if verbose:
         print('ARI: ', ARI)
@@ -191,7 +215,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         print("ASW: ", ASW)
 
     # Construct and return a dictionary of metrics
-    metrics_dict = {
+    """ metrics_dict = {
         "ARI": ARI,
         "AMI":  AMI, 
         "Purity": purity, 
@@ -205,7 +229,24 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         "CHAOS":  chaos, 
         "PAS": pas, 
         "ASW": ASW
-    }
+    }   """
+    metrics_dict = {
+    k: v for k, v in {
+        "ARI": ARI,
+        "AMI": AMI,
+        "Purity": purity,
+        "Homogeneity": homogeneity,
+        "Completeness": completeness,
+        "V-Measure": v_measure,
+        "Silhouette-Spatial": silhouette_spatial,
+        "Average-Dispersion": penalty,
+        "Silhouette": silhouette,
+        "Davies-Bouldin": davies_bouldin,
+        "CHAOS": chaos,
+        "PAS": pas,
+        "ASW": ASW
+    }.items() if v is not None
+}
 
     return metrics_dict
 

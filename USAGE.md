@@ -35,7 +35,8 @@ AnnData object containing:
 
 
 
-Mode 1 – Full Pipeline Examples. 
+Mode 1 – Full Pipeline Examples.  at the end of the computation a **preprocessed AnnData object** is automatically saved in:
+This allows **subsequent evaluation and export steps** without repeating the preprocessing phase, as the method cluster labels are stored directly in the saved AnnData object.
 
 Example 1: Download the DLPFC 10X Visium dataset found in the data availability section (see [README](README.md)).
 Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods.
@@ -96,13 +97,14 @@ Example 3: Evaluate cluster labels stored in adata.obs
 `````
 python MultimetricST.py \
   --mode 2 \
-  --data_path Data/DLPFC/151673 \
-  --is_h5ad 0 \
+  --data_path Data/Preprocessed/DLPFC_151673.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name DLPFC_151673 \
   --data_type Visium \
   --result_filename clustering_results_DLPFC_151673.csv \
-  --method_cluster_label CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth Data/DLPFC/151673/metadata.tsv \
-  --ground_truth_col_name layer_guess &
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  &
  `````
 Example 4: Evaluate cluster labels from CSV file
 `````
@@ -110,10 +112,12 @@ python MultimetricST.py \
   --mode 2 \
   --data_path Data/DLPFC/151673 \
   --is_h5ad 0 \
+  --plot_size 0 \
+  --data_name DLPFC_151673 \
   --data_type Visium \
   --result_filename clustering_results_DLPFC_151673.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
-  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --cluster_label_col_names CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
 `````
@@ -145,7 +149,7 @@ python MultimetricST.py \
   --data_path Data/DLPFC/151673 \
   --result_filename clustering_results_DLPFC_151673.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
-  --cluster_label_col_names CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
+  --cluster_label_col_names CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
   --ground_truth Data/DLPFC/151673/metadata.tsv \
   --ground_truth_col_name layer_guess &
 `````
@@ -164,8 +168,11 @@ The interactive dashboard:
 
 - compares computational efficiency (time & memory).
 
-It is implemented using Panel and Plotly and is launched automatically at the end of the execution. The dashboard can be accessed via browser on http://localhost:5006/
+It is implemented using Panel and Plotly and is launched automatically at the end of the execution. The dashboard can be accessed via browser on http://localhost:8008/
 
+The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8008. Users should ensure that the selected port is free, or change it to a different port if necessary.
+
+Note: After successfully displaying the dashboard, launching a new dashboard instance requires closing the browser tab of the previous instance (if any).
 
 #### Ground-Truth Annotations
 
@@ -283,6 +290,16 @@ MOSTA embryo sections require a very small plotting size due to their extremely 
 |--------------|-------------|-------------|
 | Mouse Brain Partial Coronal | 20 | 10 |
 
+
+---
+
+### CosMx Datasets
+
+| Dataset Type | `n_cluster` | `plot_size` |
+|--------------|-------------|-------------|
+| Human Lung Cancer | 18 | 100 |
+
+
 ---
 
 The `n_cluster` values are derived from the biological annotations when available in the datasets. Advanced users can set different parameters to explore alternative biological assumptions or benchmarking scenarios.
@@ -395,6 +412,7 @@ python MultimetricST.py \
   --is_h5ad 1 \
   --data_name MOSTA_E10_5_E2S1 \
   --data_type Stereo \
+  --subset_methods conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
   --result_filename clustering_results_MOSTA_E10_5_E2S1.csv \
   --plot_size 1  \
   --n_clusters 18 &
@@ -410,6 +428,7 @@ python MultimetricST.py \
   --ground_truth annotation \
   --is_h5ad 1 \
   --data_name MOSTA_E11_5_E1S1 \
+  --subset_methods conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
   --data_type Stereo \
   --result_filename clustering_results_MOSTA_E11_5_E1S1.csv \
   --plot_size 1  \
@@ -417,7 +436,7 @@ python MultimetricST.py \
 `````
 
 
-Example 10: Download the Xenium dataset found in the data availability section (see [README](README.md)).
+Example 10: Download the Xenium Mouse Brain Partial Coronal dataset found in the data availability section (see [README](README.md)).
 Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
 `````
 python MultimetricST.py \
@@ -429,4 +448,246 @@ python MultimetricST.py \
   --result_filename clustering_results_Xenium_Mouse_Brain_Partial_Coronal.csv \
   --plot_size 10  \
   --n_clusters 20 &
+`````
+
+
+Example 11: Download the CosMx Human Lung Cancer dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/CosMx/Human_Lung_Cancer/SMI_Lung.h5ad \
+   --ground_truth cell_type \
+  --is_h5ad 1 \
+  --data_name CosMx_Human_Lung_Cancer \
+  --data_type CosMx \
+  --subset_methods HERGAST SCAN-IT SEDR SpaceFlow STAGATE\
+  --result_filename clustering_results_CosMx_Human_Lung_Cancer.csv \
+  --plot_size 100  \
+  --n_clusters 18 \
+  --internal_metrics 0 &
+`````
+
+
+Example 12: Download the VisiumHD Human Colon Cancer dataset found in the data availability section (see [README](README.md)).
+Execute the following command to run all available spatial domain identification methods described in the paper or use `--subset_methods` to execute on a subset of methods. The parameter `--plot_size` is dataset specific and it required where the tissue image information is unavailable in adata.uns.  
+`````
+python MultimetricST.py \
+  --mode 1 \ 
+  --data_path Data/HDVisium/Human_Colorectal_Cancer/binned_outputs/square_016um  \
+  --is_h5ad 0 \
+  --ground_truth Data/HDVisium/Human_Colorectal_Cancer/binned_outputs/16um_squares_annotation.csv \
+  --data_name VisiumHD016_Human_Lung_Cancer \
+  --data_type VisiumHD \
+  --result_filename clustering_results_VisiumHD016_Human_Colon_Cancer.csv \
+  --plot_size 100  \
+  --n_clusters 18 \
+   --internal_metrics 0 &
+`````
+
+
+
+## More Examples 
+Mode 2 – Evaluation + visualization. --data_path if provided by the user it is the path to the adata containing the cluster labels and spatial location for optional spatial plotting visualizzation. The --method_cluster_label  are the name of the adata.obs key containing the cluster the key should correspond to the method name. a Prepocessed adata data in Data/Preprocessed is saved when the mode 1 is previuosly used on the same data set this allows subsequent evalution and export with method cluster labels saved. In the case a csv file contiain the clusters is available instead of the adata use the --cluster_label_path --cluster_label_col_names  option. 
+
+## More Examples - Mode 2 – Evaluation + Visualization
+
+In **Mode 2**, the framework performs **evaluation and optional visualization** of clustering results.
+- `--data_path`:  
+  If provided by the user, this should be the path to the **AnnData (`.h5ad`) object** containing the **cluster labels** and **spatial coordinates**, which are required for optional spatial visualization.
+- `--method_cluster_label`:  
+  These are the **names of the keys in `adata.obs` containing the cluster labels**.  
+  Each key should correspond to the **name of the method** used to generate the clustering.
+When **Mode 1** has previously been executed on the same dataset, a **preprocessed AnnData object** is automatically saved in:
+This allows **subsequent evaluation and export steps** without repeating the preprocessing phase, as the method cluster labels can be stored directly in the saved AnnData object.
+Alternatively, if the cluster assignments are stored in a **CSV file instead of an AnnData object**, you can use the following options:
+- `--cluster_label_path` – path to the CSV file containing cluster labels  
+- `--cluster_label_col_names` – names of the columns containing the cluster labels for each method
+
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/DLPFC_151673.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name DLPFC_151673 \
+  --data_type Visium \
+  --result_filename clustering_results_evaluate_DLPFC_151673.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151673.log &
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/DLPFC_151674.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name DLPFC_151674 \
+  --data_type Visium \
+  --result_filename clustering_results_evaluate_DLPFC_151674.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151674.log &
+
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/DLPFC_151508.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name DLPFC_151508 \
+  --data_type Visium \
+  --result_filename clustering_results_evaluate_DLPFC_151508.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151508.log &
+
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/DLPFC_151669.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name DLPFC_151669 \
+  --data_type Visium \
+  --result_filename clustering_results_evaluate_DLPFC_151669.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151669.log &
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/Mouse_Brain_Anterior.h5ad \
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name Mouse_Brain_Anterior \
+  --data_type Visium \
+  --result_filename clustering_results_evaluate_Mouse_Brain_Anterior.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Brain_Anterior.log &
+`````
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/Mouse_Primary_Cortex.h5ad \
+  --is_h5ad 1 \
+  --plot_size 15 \
+  --data_name Mouse_Primary_Cortex \
+  --data_type BaristerSeq \
+  --result_filename clustering_results_evaluate_Mouse_Primary_Cortex.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Primary_Cortex.log &
+`````
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/Mouse_Visual_Cortex.h5ad \
+  --is_h5ad 1 \
+  --plot_size 250 \
+  --data_name Mouse_Visual_Cortex \
+  --data_type STARMaps \
+  --result_filename clustering_results_evaluate_Mouse_Visual_Cortex.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Visual_Cortex.log &
+`````
+
+
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/Axolotl_Brain.h5ad \
+  --is_h5ad 1 \
+  --plot_size 35 \
+  --data_name Axolotl_Brain \
+  --data_type Stereo \
+  --result_filename clustering_results_evaluate_Axolotl_Brain.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Axolotl_Brain.log &
+`````
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/MOSTA_E10_5_E2S1.h5ad\
+  --is_h5ad 1 \
+  --plot_size 1 \
+  --data_name MOSTA_E10_5_E2S1 \
+  --data_type Stereo \
+  --result_filename clustering_results_evaluate_MOSTA_E10_5_E2S1.csv \
+  --method_cluster_label conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_MOSTA_E10_5_E2S1.log &
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/Xenium_Mouse_Brain_Partial_Coronal.h5ad\
+  --is_h5ad 1 \
+  --plot_size 10 \
+  --data_name Xenium_Mouse_Partial_Coronal \
+  --data_type Xenium \
+  --result_filename clustering_results_evaluate_Xenium_Mouse_Partial_Coronal.csv \
+  --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Xenium_Mouse_Partial_Coronal.log &
+
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/MOSTA_E11_5_E1S1.h5ad\
+  --is_h5ad 1 \
+  --plot_size 1 \
+  --data_name MOSTA_E11_5_E1S1 \
+  --data_type Stereo \
+  --result_filename clustering_results_evaluate_MOSTA_E11_5_E1S1.csv \
+  --method_cluster_label conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
+  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_MOSTA_E11_5_E1S1.log &
+
+`````
+
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/CosMx_Human_Lung_Cancerl.h5ad\
+  --is_h5ad 1 \
+  --plot_size 100 \
+  --data_name CosMx_Human_Lung_Cancer \
+  --data_type CosMx \
+  --result_filename clustering_results_evaluate_CosMx_Human_Lung_Cancer.csv \
+  --method_cluster_label HERGAST SCAN-IT SEDR SpaceFlow STAGATE \
+  --ground_truth ground_truth\
+  --internal_metrics 0  > outputs/test_multimetricST_mode2_all_CosMx_Human_Lung_Cancer.log &
+
+`````
+
+`````
+python MultimetricST.py \
+  --mode 2 \
+  --data_path Data/Preprocessed/VisiumHD016_Human_Colon_Cancer.h5ad\
+  --is_h5ad 1 \
+  --plot_size 0 \
+  --data_name VisiumHD016_Human_Colon_Cancer \
+  --data_type VisiumHD \
+  --result_filename clustering_results_evaluate_VisiumHD016_Human_Colon_Cancer.csv \
+  --method_cluster_label HERGAST  \
+  --ground_truth ground_truth \
+  --internal_metrics 0  > outputs/test_multimetricST_mode2_all_VisiumHD016_Human_Colon_Cancer.log &
 `````

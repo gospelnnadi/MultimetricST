@@ -59,9 +59,22 @@ def create_dashboard(result_path, plot_path=None):
         value="Annotation-Dependent Metrics (Best=Max)",
     )
 
-    bubble_x = pn.widgets.Select(name="Scatter X Metric", options=list(results_df.columns), value="Silhouette-Spatial")
-    bubble_y = pn.widgets.Select(name="Scatter Y Metric", options=list(results_df.columns), value="Silhouette")
+    #bubble_x = pn.widgets.Select(name="Scatter X Metric", options=list(results_df.columns), value="Silhouette-Spatial")
+    #bubble_y = pn.widgets.Select(name="Scatter Y Metric", options=list(results_df.columns), value="Silhouette")
+    default_x = "Silhouette-Spatial"
+    default_y = "Silhouette"
 
+    bubble_x = pn.widgets.Select(
+    name="Scatter X Metric",
+    options=list(results_df.columns),
+    value=default_x if default_x in results_df.columns else list(results_df.columns)[0]
+    )
+
+    bubble_y = pn.widgets.Select(
+    name="Scatter Y Metric",
+    options=list(results_df.columns),
+    value=default_y if default_y in results_df.columns else list(results_df.columns)[0]
+    )
     # ----------------------------
     # Create FigureWidget for radar chart
     # ----------------------------
@@ -72,6 +85,8 @@ def create_dashboard(result_path, plot_path=None):
             group_name = radar_group_selector.value
             selected_methods = model_selector.value
             metrics = radar_groups[group_name]
+            # Keep only metrics present in the dataframe
+            metrics = [m for m in metrics if m in results_df.columns]
             fig_radar.data = []  # Clear existing traces
             for method in selected_methods:
                 values = results_df.loc[results_df["method"] == method, metrics].values.flatten().tolist()
@@ -119,10 +134,18 @@ def create_dashboard(result_path, plot_path=None):
     def make_bubble(selected, x_metric, y_metric):
         try:
             df_filtered = results_df[results_df["method"].isin(selected)]
+            hover_metrics = [
+                "ARI","AMI","Homogeneity","Purity",
+                "Completeness","V-Measure","Silhouette-Spatial",
+                "Average-Dispersion","Silhouette","Davies-Bouldin",
+                "CHAOS","PAS","ASW"
+            ]
+
+            # Keep only metrics present in the dataframe
+            hover_metrics = [m for m in hover_metrics if m in df_filtered.columns]
             fig = px.scatter(df_filtered, x=x_metric, y=y_metric,
                      color="method",
-                     hover_data=["ARI","AMI","Homogeneity","Purity", 
-                            "Completeness","V-Measure","Silhouette-Spatial","Average-Dispersion", "Silhouette", "Davies-Bouldin", "CHAOS", "PAS","ASW" ])
+                     hover_data=hover_metrics)
     
     
             fig.update_traces(marker=dict(size=14, opacity=0.8,))
@@ -206,8 +229,10 @@ def create_dashboard(result_path, plot_path=None):
             rows = []
             df_filtered = results_df[results_df["method"].isin(selected_methods)]
             for metric, desc in metric_interpretations.items():
+                if metric not in df_filtered.columns:
+                    continue
                 # Sort by metric (ascending for DBI, else descending)
-                ascending = True if metric == "Davies-Bouldin" else False
+                ascending = True if metric == "Davies-Bouldin"  or metric == "CHAOS" or metric == "PAS" else False
                 top2 = df_filtered.sort_values(metric, ascending=ascending)["method"].head(2).tolist()
                 rows.append([metric, ", ".join(top2), desc])
 
@@ -266,9 +291,10 @@ def create_dashboard(result_path, plot_path=None):
         Create a read-only, fully sortable Tabulator table in Panel 1.8.2
         without HTML/color formatting (numeric columns sort correctly).
         """
+        table = None
         try:
             # 1) prepare dataframe and filter by selected methods
-            sub_df = results_df[["method"] + [m for m in metrics if m in results_df.columns]].copy()
+            """ sub_df = results_df[["method"] + [m for m in metrics if m in results_df.columns]].copy()
             if selected_methods is not None:
                 sub_df = sub_df[sub_df["method"].isin(selected_methods)].reset_index(drop=True)
 
@@ -276,6 +302,20 @@ def create_dashboard(result_path, plot_path=None):
             for m in metrics:
                 if m in sub_df.columns:
                     sub_df[m] = pd.to_numeric(sub_df[m], errors="coerce")
+            """
+
+
+            valid_metrics = [m for m in metrics if m in results_df.columns]
+
+            sub_df = results_df[["method"] + valid_metrics].copy()
+
+            if selected_methods is not None:
+                sub_df = sub_df[sub_df["method"].isin(selected_methods)].reset_index(drop=True)
+
+            # Ensure numeric columns
+            for m in valid_metrics:
+                sub_df[m] = pd.to_numeric(sub_df[m], errors="coerce")
+
 
             # 3) create Tabulator without columns argument
             table = pn.widgets.Tabulator(

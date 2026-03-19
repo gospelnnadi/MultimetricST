@@ -70,11 +70,11 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
 
     #If histlogy image is not available, SpaGCN can calculate the adjacent matrix using the fnction below
     adj=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
-    np.savetxt(f'../adj.csv', adj, delimiter=',')
+    #np.savetxt(f'../adj.csv', adj, delimiter=',')
     #spatial domain detection using SpaGCN
 
     #expression data preprocessing
-    adj=np.loadtxt(f'../adj.csv', delimiter=',')
+    #adj=np.loadtxt(f'../adj.csv', delimiter=',')
 
     #set hyper-parameters
     p=0.5 
@@ -105,12 +105,22 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     end_time = time.time()
     tracemalloc.stop()
 
+    device_idx =  "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+            device = torch.device(f"cuda:{device_idx}")
+            allocated = torch.cuda.memory_allocated(device) / (1024 ** 2) 
+            cached = torch.cuda.memory_reserved(device) / (1024 ** 2)
+    else:
+            allocated = cached = 0
+
     finaltime = f"{end_time - start_time:.4f}"
     current=f"{current / 10**6:.4f}"
     peak=f"{peak / 10**6:.4f}"
     print(f"Execution time: {finaltime} seconds")
     print(f"Current memory usage: {current} MB")
     print(f"Peak memory usage: {peak} MB")
+    print(f"GPU memory allocated: {allocated:.4f} MB")
+    print(f"GPU memory cached: {cached:.4f} MB")
 
     adj_2d=spg.calculate_adj_matrix(x=x_pixel,y=y_pixel, histology=False)
     refined_pred=spg.refine(sample_id=adata.obs.index.tolist(), pred=adata.obs["pred"].tolist(), dis=adj_2d, shape="hexagon")
@@ -120,6 +130,6 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata.obs['refined_pred'],finaltime, peak
+    return adata.obs['refined_pred'],finaltime, peak, allocated, cached
 
 

@@ -109,11 +109,11 @@ def preprocess(adata, n_components=20,random_seed=35):
         hvg_genes=hvg(adata)
         adata=norm_data(adata)
         adata= adata[:,hvg_genes]
-
-    if issparse(adata.X):
+    if 'X_pca' not in adata.obsm:
+        if issparse(adata.X):
             data=pca ( adata.X.toarray(), n_components= n_components,random_state=random_seed) 
-    else:
+        else:
             data=pca ( adata.X, n_components= n_components,random_state=random_seed) #if data already a matrix
 
-    adata.obsm["X_pca"]=data
+        adata.obsm["X_pca"]=data
     return adata

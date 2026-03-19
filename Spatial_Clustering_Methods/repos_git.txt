@@ -9,3 +9,4 @@ https://github.com/zcang/SCAN-IT.git
 https://github.com/JinmiaoChenLab/GraphST.git
 https://github.com/hongleir/SpaceFlow.git
 https://github.com/InfOmics/GIST.git
+https://github.com/GYQ-form/HERGAST.git

@@ -41,10 +41,11 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
 
     seed=35
 
-    if data_type == 'Visium':
+    """ if data_type == 'Visium':
         refinement=True
     else: 
-        refinement=False
+        refinement=False """
+    refinement=True
 
     adata_raw=adata.copy()
 
@@ -59,12 +60,22 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     end_time = time.time()
     tracemalloc.stop()
 
+    device_idx =  "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+            device = torch.device(f"cuda:{device_idx}")
+            allocated = torch.cuda.memory_allocated(device) / (1024 ** 2) 
+            cached = torch.cuda.memory_reserved(device) / (1024 ** 2)
+    else:
+            allocated = cached = 0
+
     finaltime = f"{end_time - start_time:.4f}"
     current=f"{current / 10**6:.4f}"
     peak=f"{peak / 10**6:.4f}"
     print(f"Execution time: {finaltime} seconds")
     print(f"Current memory usage: {current} MB")
-    print(f"Peak memory usage: {peak} MB")  
+    print(f"Peak memory usage: {peak} MB")
+    print(f"GPU memory allocated: {allocated:.4f} MB")
+    print(f"GPU memory cached: {cached:.4f} MB")  
 
     adata = clustering_method(adata, num_cluster=n_clusters,refinement=refinement, seed=seed)
     #plot_cluster(adata, f"outputs/{data_name}.png", plot_size=plot_size)
@@ -80,6 +91,6 @@ def run(adata ,data_name,data_type='Visium',n_clusters=7):
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata_raw.obs['cluster'],finaltime, peak
+    return adata_raw.obs['cluster'],finaltime, peak, allocated, cached
     
 

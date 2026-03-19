@@ -136,9 +136,9 @@ python MultimetricST.py \
   --is_h5ad 0 \
   --data_type Visium \
   --n_clusters 7 \
-  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+  --subset_methods CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
 `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:8008/
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 
@@ -160,9 +160,9 @@ python MultimetricST.py \
   --is_h5ad 0 \
   --data_type Visium \
   --n_clusters 7 \
-  --subset_methods CCST conST DeepST GIST GraphST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
+  --subset_methods CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
   `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:5006/
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:8008/
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 
@@ -178,17 +178,17 @@ docker-compose down
 
 
 # Data Availability 
-The spatial transcriptomics datasets are available at:  https://zenodo.org/records/18745782
+The spatial transcriptomics datasets are available at:  https://zenodo.org/records/19056154
 
 Download the DLPFC 151673 data:
 ````
-        wget https://zenodo.org/records/18745782/files/Data.zip
+        wget https://zenodo.org/records/19056154/files/Data.zip
         unzip Data.zip
         rm Data.zip
 ````
 Download the Axolotl dataset:
 ````
-        wget https://zenodo.org/records/18745782/files/Stereo.zip
+        wget https://zenodo.org/records/19056154/files/Stereo.zip
         unzip Stereo.zip -d Data/
         rm Stereo.zip
 ````
@@ -219,7 +219,11 @@ All added spatial domain method repositories are executed through their respecti
 
 Users can customize and tune method-specific parameters by modifying the corresponding `run` function for each method.
 
+Ensure to install additional pip dependecies required by the added method. 
+
 `MultimetricST.py` allows users to specify dataset-specific parameters (e.g., **Visium**, **Slide**, **Stereo**, **Xenium**, **CosMx**, **VisiumHD**) through the `--data_type` argument. This parameter is passed to each method when required.
+
+Other parameter modifications or tuning can be performed directly in Spatial_Clustering_Methods/run<MethodName>.py for each method, since these changes are method-specific.
 
 Using the `--subset_methods` parameter, users can define a subset of methods to be executed, evaluated, and visualized when running **Mode 1**.
 

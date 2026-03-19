@@ -105,8 +105,11 @@ torch.cuda.manual_seed(params.seed)
 device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
 print('Using device: ' + device)
 params.device = device
+device = 'cuda:0' if torch.cuda.is_available() else 'cpu'
+print('Using device: ' + device)
+params.device = device
 
-
+seed_torch(params.seed)
 
 
 def run(adata,data_name,data_type='Visium',n_clusters=7): 
@@ -150,12 +153,22 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     end_time = time.time()
     tracemalloc.stop()
 
+    device_idx =  "cuda" if torch.cuda.is_available() else "cpu"
+    if torch.cuda.is_available():
+            device = torch.device(f"cuda:{device_idx}")
+            allocated = torch.cuda.memory_allocated(device) / (1024 ** 2) 
+            cached = torch.cuda.memory_reserved(device) / (1024 ** 2)
+    else:
+            allocated = cached = 0
+
     finaltime = f"{end_time - start_time:.4f}"
     current=f"{current / 10**6:.4f}"
     peak=f"{peak / 10**6:.4f}"
     print(f"Execution time: {finaltime} seconds")
     print(f"Current memory usage: {current} MB")
     print(f"Peak memory usage: {peak} MB")
+    print(f"GPU memory allocated: {allocated:.4f} MB")
+    print(f"GPU memory cached: {cached:.4f} MB")
 
     np.save(f'{params.save_path}/conST_result.npy', conST_embedding)
     # clustering
@@ -182,11 +195,11 @@ def run(adata,data_name,data_type='Visium',n_clusters=7):
     index = [str(x) for x in index]
 
     dis = graph_dict['adj_norm'].to_dense().numpy() + np.eye(graph_dict['adj_norm'].shape[0])
-    refine = refine_cluster(sample_id = index, pred = adata_conST.obs['leiden'].tolist(), dis=dis)
+    refine = refine_cluster(sample_id = index, pred = adata_conST.obs[cluster_key].tolist(), dis=dis)
     adata.obs['refine'] = refine
 
     adata.obs['cluster'] =adata.obs['refine'] 
     adata.uns['exec_time'] = finaltime
     adata.uns['current_memory'] = current   
     adata.uns['peak_memory'] = peak
-    return adata.obs['refine'],finaltime, peak
+    return adata.obs['refine'],finaltime, peak, allocated, cached

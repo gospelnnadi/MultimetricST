@@ -54,26 +54,30 @@ def get_adata_from_exp_spatial_path(mode, expression_path, spatial_path):
     return adata
 
 
+
+
 def plot_label(adata, plot_size, key, savepath):
     import matplotlib.pyplot as plt
     import squidpy as sq
+    adata1 = adata[adata.obs[key] != '-1'].copy()
     if plot_size:
-      #os.makedirs("figures/show/", exist_ok=True)
-      #sc.pl.spatial(adata, color=key, spot_size=plot_size,save=f"/{savepath}") 
-      #sc.pl.spatial(adata, color=key, spot_size=plot_size,save= savepath) 
       sc.pl.spatial(
-        adata,
+        adata1,
         color=key,
         spot_size=plot_size,
+        palette= 'tab20',
         show=False   
         )
-      adata.uns.pop(f'{key}_colors')
+      adata1.uns.pop(f'{key}_colors')
       plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
       plt.close()
     else: 
-      
-      sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
-      adata.uns.pop(f'{key}_colors')
+      sc.pl.spatial(adata1, color=key,palette='tab20',
+                     show=False ) 
+      #sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
+      adata1.uns.pop(f'{key}_colors')
+      plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
+      plt.close()
 
 
 
@@ -249,65 +253,94 @@ def main(args):
 
             ground_truth =ground_truth.replace(["NA", "nan", ""], "-1")
             ground_truth = np.asarray(ground_truth.replace(np.nan, "-1")).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'   # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
         elif isinstance(ground_truth, np.ndarray):
             ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
             ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'   # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
         else:
             # Fallback: if it's a list or other type
             ground_truth = np.array(ground_truth)
             ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
             ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
-
-        print("ground_truth unique", np.unique(ground_truth))
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'   # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
+        
+        print("ground_truth unique", np.unique(ground_truth[ground_truth != '-1']))
         adata_raw.obs["ground_truth"] = ground_truth.astype(str)
     elif args.ground_truth in adata_raw.obs: 
         ground_truth = adata_raw.obs[args.ground_truth]
         if isinstance(ground_truth, (pd.DataFrame, pd.Series)):
             ground_truth =ground_truth.replace(["NA", "nan", ""], "-1")
             ground_truth = np.asarray(ground_truth.replace(np.nan, "-1")).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'   # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
         elif isinstance(ground_truth, np.ndarray):
             ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
             ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'  # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
         else:
             # Fallback: if it's a list or other type
             ground_truth = np.array(ground_truth)
             ground_truth = pd.Series(ground_truth).replace(["NA", "nan", ""], np.nan).to_numpy()
             ground_truth = np.where(np.isnan(ground_truth), "-1", ground_truth).ravel()
-            ground_truth = (
-            pd.Series(ground_truth)
-            .astype("category")
-            .cat.codes + 1
-            ).to_numpy()
+            gt = pd.Series(ground_truth)
+            mask = gt != '-1'  # keep -1 untouched
+            gt_recoded = gt.copy()
+            gt_recoded[mask] = (
+            gt[mask]
+           .astype("category")
+           .cat.codes + 1
+           ).astype(str)
+            ground_truth = gt_recoded.to_numpy()
         adata_raw.obs['ground_truth']=ground_truth
 
         adata_raw.obs["ground_truth"] = ground_truth.astype(str)
         print("ground_truth dim", ground_truth.shape)
-        print("ground_truth unique", np.unique(ground_truth))
+        print("ground_truth unique", np.unique(ground_truth[ground_truth != '-1']))
+    else:
+        print("Warning: Ground truth annotation not found in provided path or adata.obs. External metrics will be set to 0.")
+        args.external_metrics=False
+        if "ground_truth" in adata_raw.obs.columns:
+            del adata_raw.obs["ground_truth"]
       
         
 
@@ -320,7 +353,7 @@ def main(args):
     # Mode 2: Evaluation and visualization only
     elif args.mode == 2:
         print("Running Mode 2: Evaluation and visualization")
-        run_evaluation_and_visualization(args,adata_raw,data_name)
+        run_evaluation_and_visualization(args,adata_raw,data_name, data_type=args.data_type)
         print("Evaluation and visualization completed.")
     
     # Mode 3: Visualization only from precomputed scores
@@ -342,7 +375,7 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
         print("Running clustering pipeline...")
         
         # Run clustering and get cluster labels
-        adata, comp_cost = run_clustering_pipeline(adata_raw.copy(),data_name,subset_methods=subset_methods,data_type='Visium',n_clusters=n_clusters)
+        adata, comp_cost = run_clustering_pipeline(adata_raw.copy(),data_name,subset_methods=subset_methods,data_type=args.data_type,n_clusters=n_clusters)
         
         # Import and run evaluation module
         from Evaluate.evaluate import evaluate_cluster
@@ -370,15 +403,38 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
         else:
             is_visium=False
         results=[]
+
+        if args.external_metrics:
+            print("Evaluate external metrics is True...")
+            if ground_truth is None or len(ground_truth) == 0:
+                print("Warning: Ground truth annotation is missing or empty. External metrics will be set to 0.")   
+            else:
+                print(f"Ground truth annotation provided with {len(np.unique(ground_truth))} unique clusters.")
+                
+        if args.internal_metrics:
+            print("Evaluate internal metrics is True...")
+        elif args.internal_metrics == False:
+            print("Evaluate internal metrics is False. Only external metrics will be computed if ground truth is available.")
         
         for m in comp_cost:
             method=m['method']
             # Clusters from adata
             print(f"\n\nEvaluating clustering results...{method}\n\n")
-            pred = adata.obs[method]
-            # Keep only spots present in adata
-     
-            scores=evaluate_cluster( adata,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
+
+            if adata[adata.obs[method] == '-1'].shape[0] > 0:
+                adata1 = adata[adata.obs[method] != '-1'].copy()
+                adata1 = preprocess(adata1, n_components=n_components, random_seed=random_seed)
+                pca_matrix1 = adata1.obsm["X_pca"]
+ 
+            else:   
+                adata1= adata.copy()
+                pca_matrix1 = pca_matrix
+                
+            pred = adata1.obs[method]
+            if 'ground_truth' in adata1.obs:
+                    ground_truth =adata1.obs['ground_truth'] 
+        
+            scores=evaluate_cluster( adata1,pred, ground_truth, pca_matrix1, is_visium=is_visium,verbose=True,decimal=4, external_metrics=args.external_metrics, internal_metrics=args.internal_metrics)
             
             # Merge metrics and computational cost into one record
             m.update(scores)
@@ -401,7 +457,7 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
 
         print("Running dashboard visualization...")
         # Run dashboard visualization
-        run_dashboard(result_savepath, plot_savepath )
+        run_dashboard(result_savepath, plot_savepath, port=args.dashboard_port )
  
 
     except Exception as e:
@@ -454,6 +510,18 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         else:
             is_visium=False
         results=[]
+        if args.external_metrics:
+            print("Evaluate external metrics is True...")
+            if ground_truth is None or len(ground_truth) == 0:
+                print("Warning: Ground truth annotation is missing or empty. External metrics will be set to 0.")   
+            else:
+                print(f"Ground truth annotation provided with {len(np.unique(ground_truth))} unique clusters.")
+                
+        if args.internal_metrics:
+            print("Evaluate internal metrics is True...")
+        elif args.internal_metrics == False:
+            print("Evaluate internal metrics is False. Only external metrics will be computed if ground truth is available.")
+  
         for method in args.method_cluster_label:
             if method not in adata_raw.obs:
                 print(f"Warning: Method {method} not found in adata.obs. Skipping evaluation and plot.")
@@ -461,9 +529,19 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
             else: 
                 print(f"\n\nEvaluating clustering results...{method}\n\n")
             # Clusters from adata
-            pred = adata_raw.obs[method]
-           
-            scores=evaluate_cluster( adata_raw,pred, ground_truth, pca_matrix, is_visium=is_visium,verbose=True,decimal=4)
+            if adata_raw[adata_raw.obs[method] == '-1'].shape[0] > 0:
+                adata1 = adata_raw[adata_raw.obs[method] != '-1'].copy()
+                adata1 = preprocess(adata1, n_components=n_components, random_seed=random_seed)
+                pca_matrix1 = adata1.obsm["X_pca"]
+     
+            else:   
+                adata1= adata_raw.copy()
+                pca_matrix1 = pca_matrix
+            pred = adata1.obs[method]
+            if 'ground_truth' in adata1.obs:
+                    ground_truth =adata1.obs['ground_truth'] 
+
+            scores=evaluate_cluster( adata1,pred, ground_truth, pca_matrix1, is_visium=is_visium,verbose=True,decimal=4, external_metrics=args.external_metrics, internal_metrics=args.internal_metrics)
             
                 # Merge metrics and computational cost into one record
             m={'method':method}
@@ -483,7 +561,7 @@ def run_evaluation_and_visualization(args,adata_raw,data_name,data_type='Visium'
         print("Evaluation results saved.")
         print("Running dashboard visualization...")
         # Run dashboard visualization
-        run_dashboard(result_savepath, plot_savepath )
+        run_dashboard(result_savepath, plot_savepath, port=args.dashboard_port )
         
         
     except Exception as e:
@@ -540,7 +618,7 @@ def run_visualization_only(args,adata_raw,data_name):
         result_savepath=f"{ROOT}/multimetricST_outputs/{args.result_filename}"
         print("Running dashboard visualization...")
         # Run dashboard visualization
-        run_dashboard(result_savepath, plot_savepath )
+        run_dashboard(result_savepath,plot_savepath, port=args.dashboard_port )
         
 
     except Exception as e:
@@ -575,33 +653,36 @@ def load_from_file_csv_tsv_npy(args,path, col_name="annotation"):
     else:
         raise ValueError(f"Unsupported file format for cluster labels: { path}")
 
-def release_port():
+def release_port(PORT=5009):
     import psutil
 
-    PORT = 5006
-
-    for proc in psutil.process_iter(['pid', 'name']):
-        for conn in proc.connections(kind='inet'):
-            if conn.laddr.port == PORT:
-                print(f"Killing PID {proc.pid} ({proc.name()}) using port {PORT}")
-                proc.kill()
+    for conn in psutil.net_connections(kind='inet'):
+      if conn.laddr.port == PORT and conn.pid is not None:
+        try:
+            proc = psutil.Process(conn.pid)
+            print(f"Killing PID {conn.pid} ({proc.name()}) using port {PORT}")
+            proc.kill()
+        except (psutil.NoSuchProcess, psutil.AccessDenied):
+            pass
     print(f"Port {PORT} is now free.")
 
 
-def run_dashboard(result_savepath, plot_savepath=None ):
+def run_dashboard(result_savepath,plot_savepath=None, port=5009):
     """
     Run the dashboard visualization module.
     """
     try:
         from Visualize_Scores.dashboard import create_dashboard
-        release_port()  # Ensure port is free before launching
+        release_port(port)  # Ensure port is free before launching
         print("Launching dashboard...")
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
         
-        dashboard.show(address="0.0.0.0",port=5006, websocket_origin="*",
+        dashboard.show(address="0.0.0.0",port=port, websocket_origin="*",
         session_token_expiration=3600*24  # 24 hour expiration for session tokens
     )
+        print(f"Launching server at http://localhost:{port}")
+        
     except Exception as e:
         print(f"Error launching dashboard: {str(e)}")
         raise
@@ -662,7 +743,14 @@ if __name__ == '__main__':
                        help="Tissue spatial plot size. Set to 0 when histology image is available in adata")
     parser.add_argument("--result_filename", type=str, default="clustering_results.csv", 
                        help="CSV file name of precomputed clustering results (required for Mode 3), optional for Mode 1 and 2. . The defualt is clustering_results.csv. The file should be saved placed in MultimetricST/multimetricST_outputs/ for Mode 3. The computed results with Mode 1 and 2 will be saved in the same folder.")
+    parser.add_argument("--dashboard_port", type=int, default=8008, 
+                       help="Specify the port of which to launch the dashboard. default is 8008. Make sure the port is free or change to a different port if needed.")
   
+    parser.add_argument("--external_metrics", type=int, default=1, choices=[0, 1],
+                       help="Whether to compute external evaluation metrics that require ground truth annotation (1) or not")
+    parser.add_argument("--internal_metrics", type=int, default=1, choices=[0, 1],
+                       help="Whether to compute internal (annotation independent) evaluation metrics (1) or not")
+
     args = parser.parse_args()
     main(args)
 
