@@ -168,9 +168,9 @@ The interactive dashboard:
 
 - compares computational efficiency (time & memory).
 
-It is implemented using Panel and Plotly and is launched automatically at the end of the execution. The dashboard can be accessed via browser on http://localhost:8008/
+It is implemented using Panel and Plotly and is launched automatically at the end of the execution. The dashboard can be accessed via browser on http://localhost:8009/
 
-The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8008. Users should ensure that the selected port is free, or change it to a different port if necessary.
+The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8009. Users should ensure that the selected port is free, or change it to a different port if necessary.
 
 Note: After successfully displaying the dashboard, launching a new dashboard instance requires closing the browser tab of the previous instance (if any).
 

@@ -1,10 +1,10 @@
 
 services:
   mmst:
-    image: gospelnnadi1/mmst:v1.0
+    image: infomics/mmst:v1.0
     container_name: mmst_container
     ports:
-      - "5006:5006"   # host:container
+      - "8009:8009"   # host:container
     restart: unless-stopped
     volumes:
       - .:/workspace   # Mount current folder into container

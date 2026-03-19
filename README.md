@@ -138,7 +138,7 @@ python MultimetricST.py \
   --n_clusters 7 \
   --subset_methods CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
 `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:8008/
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:8009/
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 
@@ -162,7 +162,7 @@ python MultimetricST.py \
   --n_clusters 7 \
   --subset_methods CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
   `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:8008/
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:8009/
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 
