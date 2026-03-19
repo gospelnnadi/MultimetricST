@@ -4,7 +4,7 @@ services:
     image: infomics/mmst:v1.0
     container_name: mmst_container
     ports:
-      - "8009:8009"   # host:container
+      - "8008:8008"   # host:container
     restart: unless-stopped
     volumes:
       - .:/workspace   # Mount current folder into container
