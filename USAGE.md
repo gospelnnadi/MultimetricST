@@ -516,7 +516,7 @@ python MultimetricST.py \
   --data_type Visium \
   --result_filename clustering_results_evaluate_DLPFC_151673.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151673.log &
+  --ground_truth ground_truth &
 `````
 
 
@@ -530,7 +530,7 @@ python MultimetricST.py \
   --data_type Visium \
   --result_filename clustering_results_evaluate_DLPFC_151674.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151674.log &
+  --ground_truth ground_truth &
 
 `````
 
@@ -545,7 +545,7 @@ python MultimetricST.py \
   --data_type Visium \
   --result_filename clustering_results_evaluate_DLPFC_151508.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151508.log &
+  --ground_truth ground_truth  &
 
 `````
 
@@ -560,7 +560,7 @@ python MultimetricST.py \
   --data_type Visium \
   --result_filename clustering_results_evaluate_DLPFC_151669.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_DLPFC_151669.log &
+  --ground_truth ground_truth   &
 `````
 
 
@@ -574,7 +574,7 @@ python MultimetricST.py \
   --data_type Visium \
   --result_filename clustering_results_evaluate_Mouse_Brain_Anterior.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Brain_Anterior.log &
+  --ground_truth ground_truth  &
 `````
 
 `````
@@ -587,7 +587,7 @@ python MultimetricST.py \
   --data_type BaristerSeq \
   --result_filename clustering_results_evaluate_Mouse_Primary_Cortex.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Primary_Cortex.log &
+  --ground_truth ground_truth  &
 `````
 
 `````
@@ -600,7 +600,7 @@ python MultimetricST.py \
   --data_type STARMaps \
   --result_filename clustering_results_evaluate_Mouse_Visual_Cortex.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Mouse_Visual_Cortex.log &
+  --ground_truth ground_truth   &
 `````
 
 
@@ -616,7 +616,7 @@ python MultimetricST.py \
   --data_type Stereo \
   --result_filename clustering_results_evaluate_Axolotl_Brain.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Axolotl_Brain.log &
+  --ground_truth ground_truth  &
 `````
 
 `````
@@ -629,7 +629,7 @@ python MultimetricST.py \
   --data_type Stereo \
   --result_filename clustering_results_evaluate_MOSTA_E10_5_E2S1.csv \
   --method_cluster_label conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_MOSTA_E10_5_E2S1.log &
+  --ground_truth ground_truth   &
 `````
 
 
@@ -643,7 +643,7 @@ python MultimetricST.py \
   --data_type Xenium \
   --result_filename clustering_results_evaluate_Xenium_Mouse_Partial_Coronal.csv \
   --method_cluster_label CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_Xenium_Mouse_Partial_Coronal.log &
+  --ground_truth ground_truth   &
 
 `````
 
@@ -658,7 +658,7 @@ python MultimetricST.py \
   --data_type Stereo \
   --result_filename clustering_results_evaluate_MOSTA_E11_5_E1S1.csv \
   --method_cluster_label conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN \
-  --ground_truth ground_truth  > outputs/test_multimetricST_mode2_all_MOSTA_E11_5_E1S1.log &
+  --ground_truth ground_truth  &
 
 `````
 
@@ -674,7 +674,7 @@ python MultimetricST.py \
   --result_filename clustering_results_evaluate_CosMx_Human_Lung_Cancer.csv \
   --method_cluster_label HERGAST SCAN-IT SEDR SpaceFlow STAGATE \
   --ground_truth ground_truth\
-  --internal_metrics 0  > outputs/test_multimetricST_mode2_all_CosMx_Human_Lung_Cancer.log &
+  --internal_metrics 0  &
 
 `````
 
@@ -687,7 +687,7 @@ python MultimetricST.py \
   --data_name VisiumHD016_Human_Colon_Cancer \
   --data_type VisiumHD \
   --result_filename clustering_results_evaluate_VisiumHD016_Human_Colon_Cancer.csv \
-  --method_cluster_label HERGAST  \
+  --method_cluster_label HERGAST SpaceFlow \
   --ground_truth ground_truth \
-  --internal_metrics 0  > outputs/test_multimetricST_mode2_all_VisiumHD016_Human_Colon_Cancer.log &
+  --internal_metrics 0   &
 `````
