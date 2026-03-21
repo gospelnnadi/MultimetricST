@@ -211,17 +211,17 @@ docker-compose down
 
 
 # Data Availability 
-The spatial transcriptomics datasets are available at:  https://zenodo.org/records/19056154
+The spatial transcriptomics datasets are available at:  https://zenodo.org/records/19153414
 
 Download the DLPFC 151673 data:
 ````
-        wget https://zenodo.org/records/19056154/files/Data.zip
+        wget https://zenodo.org/records/19153414/files/Data.zip
         unzip Data.zip
         rm Data.zip
 ````
 Download the Axolotl dataset:
 ````
-        wget https://zenodo.org/records/19056154/files/Stereo.zip
+        wget https://zenodo.org/records/19153414/files/Stereo.zip
         unzip Stereo.zip -d Data/
         rm Stereo.zip
 ````

@@ -65,19 +65,19 @@ def plot_label(adata, plot_size, key, savepath):
         adata1,
         color=key,
         spot_size=plot_size,
-        palette= 'tab20',
         show=False   
         )
-      adata1.uns.pop(f'{key}_colors')
+      
       plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
       plt.close()
+      adata1.uns.pop(f'{key}_colors')
     else: 
-      sc.pl.spatial(adata1, color=key,palette='tab20',
+      sc.pl.spatial(adata1, color=key,
                      show=False ) 
       #sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
-      adata1.uns.pop(f'{key}_colors')
       plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
       plt.close()
+      adata1.uns.pop(f'{key}_colors')
 
 
 
