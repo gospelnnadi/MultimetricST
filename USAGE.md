@@ -31,6 +31,7 @@ AnnData object containing:
 
 
 
+
 Mode 1 – Full Pipeline Examples.  at the end of the computation a **preprocessed AnnData object** is automatically saved in:
 This allows **subsequent evaluation and export steps** without repeating the preprocessing phase, as the method cluster labels are stored directly in the saved AnnData object.
 
@@ -131,11 +132,12 @@ Optional
 
 Mode 3 – Visualization Only Examples
 
-Example 5: Visualize precomputed evaluation results
+Example 5: Visualize precomputed evaluation results. 
 `````
 python MultimetricST.py \
   --mode 3 \
-  --result_filename clustering_results.csv  &
+  --result_filename clustering_results_DLPFC_151673.csv \
+  --data_name  DLPFC_151673 &
 `````
 
 Example 6: Visualization with spatial plots
@@ -143,6 +145,8 @@ Example 6: Visualization with spatial plots
 python MultimetricST.py \
   --mode 3 \
   --data_path Data/DLPFC/151673 \
+   --is_h5ad 0 \
+  --plot_size 0 \
   --result_filename clustering_results_DLPFC_151673.csv \
   --cluster_label_path multimetricST_outputs/clustering_labels.csv \
   --cluster_label_col_names CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE  \
@@ -151,6 +155,7 @@ python MultimetricST.py \
 `````
 
 # Notes
+
 
 ## Dashboard
 
@@ -187,10 +192,33 @@ If ground truth is not available, annotation-dependent metrics are skipped autom
 
 ## Output Files
 All outputs are stored under:
+```
+MultimetricST/multimetricST_outputs
+```
 
-  - multimetricST_outputs/clustering_results.csv
+Cluster evaluation score files are saved in:
+  
+  - multimetricST_outputs/clustering_results_<dataset_name>.csv
+
+  filename specified using the `--result_filename` parameter
+
+Cluster figures are saved in the directory:
 
   - multimetricST_outputs/figures/<dataset_name>/<method_name>.png
+
+  filename is extracted automatically from `--data_name` parameter and methods.
+
+For **mode 3**, the result file must be placed in the same directory (`MultimetricST/multimetricST_outputs`) to be correctly loaded.
+
+If figures are available (or already saved) for the evaluated methods, for example in:
+
+```
+MultimetricST/multimetricST_outputs/figures/DLPFC_151673
+```
+
+they will be automatically displayed in the dashboard.
+
+See `MultimetricST/run_simulated_datasets.ipynb` for an example workflow of **mode 3**.
 
 
 

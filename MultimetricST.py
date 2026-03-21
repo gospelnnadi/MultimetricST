@@ -39,10 +39,13 @@ def get_adata_from_path(path, is_h5ad):
 
 def get_adata_from_exp_spatial_path(mode, expression_path, spatial_path):
     if mode==3:   
-        spatial_matrix=load_from_file_csv_tsv_npy(args,spatial_path)
-        adata = ad.AnnData( )
-        adata.obsm["spatial"] = spatial_matrix
-        adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
+        if os.path.exists(spatial_path):
+            spatial_matrix=load_from_file_csv_tsv_npy(args,spatial_path)
+            adata = ad.AnnData( )
+            adata.obsm["spatial"] = spatial_matrix
+            adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
+        else:
+            adata = ad.AnnData( )
     else:
         exp_matrix=load_from_file_csv_tsv_npy(args,expression_path)
         spatial_matrix=load_from_file_csv_tsv_npy(args,spatial_path)
@@ -754,7 +757,7 @@ if __name__ == '__main__':
                        help="Random seed for reproducibility")
     
     # Visualization parameters
-    parser.add_argument("--plot_size", type=int, default=0,
+    parser.add_argument("--plot_size", type=float, default=0,
                        help="Tissue spatial plot size. Set to 0 when histology image is available in adata")
     parser.add_argument("--result_filename", type=str, default="clustering_results.csv", 
                        help="CSV file name of precomputed clustering results (required for Mode 3), optional for Mode 1 and 2. . The defualt is clustering_results.csv. The file should be saved placed in MultimetricST/multimetricST_outputs/ for Mode 3. The computed results with Mode 1 and 2 will be saved in the same folder.")
