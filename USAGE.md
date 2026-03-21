@@ -1,9 +1,5 @@
 
 ---
-
-# USAGE.md
-
-
 # MultimetricST – Usage Guide
 
 This document provides **practical usage instructions and example commands** for running MultimetricST in different modes and datasets, consistent with the experimental setup described in the paper.
@@ -170,9 +166,7 @@ The interactive dashboard:
 
 It is implemented using Panel and Plotly and is launched automatically at the end of the execution. The dashboard can be accessed via browser on http://localhost:8008/
 
-The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8008. Users should ensure that the selected port is free, or change it to a different port if necessary.
-
-Note: After successfully displaying the dashboard, launching a new dashboard instance requires closing the browser tab of the previous instance (if any).
+Note: After successfully displaying the dashboard, launching a new dashboard instance may requires closing the browser tab of the previous instance (if any).
 
 #### Ground-Truth Annotations
 

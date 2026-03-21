@@ -142,7 +142,38 @@ At the end of the execution, the dashboard can be accessed via browser on http:/
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 
+The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8008. 
+
+⚠️ Users should ensure that the selected port is free, or change it to a different port if necessary. Check if port is not is use by other services or applications.
+
+````` 
+ss -tuln | grep -q :8008 && echo "Port in use" || echo "Port free"
+`````
+
+
 ## Usage - Docker environment 
+
+Note on Port Configuration
+
+The dashboard is configured to launch on a port specified by the `--dashboard_port` parameter (default: 8008) and mapped in `docker-compose.yml` via:
+
+ports:
+  - "8008:8008"
+
+However, if port 8008 is already in use inside the container (e.g., by a previous instance of the application), the dashboard server will automatically attempt to bind to the next available port (e.g., 8009).
+
+As a result, the dashboard may be accessible on http://localhost:8009/ instead of the default port. 
+
+The `--dashboard_port` parameter allows the user to specify a custom port. The default port is 8008. 
+
+⚠️ Users should ensure that the selected port is free, or change it to a different port if necessary. Check if port is not is use by other services or applications.
+
+`````
+ss -tuln | grep -q :8008 && echo "Port in use" || echo "Port free"
+`````
+When using Docker, the container port mapping can also be customized in docker-compose.yml before executing the `docker-compose up -d` command
+
+
 Access the container environment.
 `````
 docker-compose exec mmst bash
@@ -162,7 +193,9 @@ python MultimetricST.py \
   --n_clusters 7 \
   --subset_methods CCST conST DeepST GIST GraphST HERGAST SCAN-IT SEDR SpaceFlow SpaGCN STAGATE &
   `````
-At the end of the execution, the dashboard can be accessed via browser on http://localhost:8008/
+At the end of the execution, the dashboard can be accessed via browser on http://localhost:8009/
+
+
 
 For detailed command-line usage and dataset-specific and execution modes examples, see [View Usage Documentation](USAGE.md).
 

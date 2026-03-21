@@ -665,6 +665,18 @@ def release_port(PORT=5009):
         except (psutil.NoSuchProcess, psutil.AccessDenied):
             pass
     print(f"Port {PORT} is now free.")
+import socket
+
+def is_port_free(port):
+    s = socket.socket()
+    try:
+        s.bind(("0.0.0.0", port))
+        return True
+    except:
+        return False
+    finally:
+        s.close()
+
 
 
 def run_dashboard(result_savepath,plot_savepath=None, port=5009):
@@ -673,14 +685,17 @@ def run_dashboard(result_savepath,plot_savepath=None, port=5009):
     """
     try:
         from Visualize_Scores.dashboard import create_dashboard
+       
         release_port(port)  # Ensure port is free before launching
+        print("Port free?", is_port_free(port))
         print("Launching dashboard...")
         # Create and launch dashboard
         dashboard = create_dashboard(result_savepath, plot_savepath)
         
         dashboard.show(address="0.0.0.0",port=port, websocket_origin="*",
-        session_token_expiration=3600*24  # 24 hour expiration for session tokens
-    )
+        session_token_expiration=3600*24  # 24 hour expiration for session tokens 
+        )
+
         print(f"Launching server at http://localhost:{port}")
         
     except Exception as e:
