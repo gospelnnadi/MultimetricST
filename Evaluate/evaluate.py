@@ -118,6 +118,9 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         AMI = metrics.adjusted_mutual_info_score(ground_truth, pred)
         AMI = np.round(AMI, decimal)
 
+        NMI = metrics.normalized_mutual_info_score(ground_truth, pred)
+        NMI = np.round(NMI, decimal)
+
         # Purity Score: sum of max over rows in contingency matrix / total
         purity = metrics.cluster.contingency_matrix(ground_truth, pred).max(axis=0).sum() / len(ground_truth)
         purity = np.round(purity, decimal)
@@ -133,18 +136,11 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         # V-measure (harmonic mean of homogeneity and completeness)
         v_measure = metrics.v_measure_score(ground_truth, pred)
         v_measure = np.round(v_measure, decimal)
-        """ metrics_dict.append({
-        "ARI": ARI,
-        "AMI":  AMI, 
-        "Purity": purity, 
-        "Homogeneity": homogeneity, 
-        "Completeness": completeness,
-        "V-Measure":  v_measure
-        }) """
+ 
     
     else:
         # Fallback to 0 if no valid ground truth
-        ARI, AMI, purity, homogeneity, completeness, v_measure = None, None, None, None, None, None
+        ARI, AMI,NMI, purity, homogeneity, completeness, v_measure = None, None, None, None, None, None, None
 
     # Compute clustering metrics if at least 2 clusters are present
     if len(np.unique(pred)) > 1 and internal_metrics:
@@ -174,16 +170,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
         # ASW: average spatial within-cluster distance
         ASW = compute_ASW(pred, adata.obsm['spatial'])
         ASW = np.round(ASW, decimal)
-        """ metrics_dict.append({
-        "Silhouette-Spatial": silhouette_spatial, 
-        "Average-Dispersion": penalty, 
-        "Silhouette": silhouette, 
-        "Davies-Bouldin": davies_bouldin,
-        "CHAOS":  chaos, 
-        "PAS": pas, 
-        "ASW": ASW
-    }) """
-
+ 
     else:
         # Fallback values for single-cluster predictions
         silhouette_spatial, penalty, silhouette, davies_bouldin, chaos, pas, ASW = None,None, None, None, None, None, None
@@ -202,6 +189,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     if verbose:
         print('ARI: ', ARI)
         print("AMI: ", AMI)
+        print("NMI: ", NMI)
         print("Purity Score: ", purity)
         print("Homogeneity Score: ", homogeneity)
         print("Completeness Score: ", completeness)
@@ -218,6 +206,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     """ metrics_dict = {
         "ARI": ARI,
         "AMI":  AMI, 
+        "NMI": NMI,
         "Purity": purity, 
         "Homogeneity": homogeneity, 
         "Completeness": completeness,
@@ -234,6 +223,7 @@ def evaluate_cluster(adata, pred, ground_truth=None,  pca_matrix=None, is_visium
     k: v for k, v in {
         "ARI": ARI,
         "AMI": AMI,
+        "NMI": NMI,
         "Purity": purity,
         "Homogeneity": homogeneity,
         "Completeness": completeness,

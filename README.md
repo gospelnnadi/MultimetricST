@@ -43,7 +43,19 @@ The framework supports **three execution modes**, controlled by a user-specified
 
 Each mode requires a different set of input data, consistent with the manuscript description.
 
+### Evaluation module 
 
+The evaluation module computes annotation-based and annotation-independent metrics. 
+   
+   1. Annotation-dependent metrics: 
+
+         Adjusted Rand Index (ARI), Adjusted Mutual Information (AMI), Normalized Mutual Information (NMI), Homogeneity (Hom), Purity (Pur), Completeness (Com), and V-Measure (V-M).
+
+   2. Annotation-independent metrics:
+   
+         Spatial compactness: Clustering Homogeneity Across Spots (CHAOS), Percentage of Abnormal Spots (PAS), and Average Silhouette Width (ASW).
+         Transcriptomic coherence: Davies-Bouldin Index (DBI) and Silhouette Coefficient (SC).
+         Spatial-aware transcriptomic coherence: Silhouette Spatial Coefficient (SSC).
 
 
 # Setup

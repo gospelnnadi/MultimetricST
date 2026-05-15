@@ -78,7 +78,16 @@ def plot_label(adata, plot_size, key, savepath):
       sc.pl.spatial(adata1, color=key,
                      show=False ) 
       #sq.pl.spatial_scatter(adata, color=key,cmap='Paired', save=savepath) 
-      plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300)
+      # Set figure size in inches
+      """ plt.rcParams.update({
+             'font.size': 1,
+                'pdf.fonttype': 42,   # TrueType (better rendering)
+                'ps.fonttype': 42
+                })
+        plt.savefig(f'{savepath}.pdf', bbox_inches="tight", dpi=1200, format='pdf')
+       """
+      
+      plt.savefig(f'{savepath}.png', bbox_inches="tight", dpi=300, format='png')
       plt.close()
       adata1.uns.pop(f'{key}_colors')
 
@@ -397,7 +406,7 @@ def run_full_pipeline(args,adata_raw,data_name,subset_methods=None,data_type='Vi
             print(f"Saved {method} cluster plot")
         else: 
             ground_truth=None
-            print("ground truth was detcted in anndata and will be used for evaluation")
+            print("Warning: Ground truth was not detcted in anndata. Annotation-based evaluation will not be computed")
         
         # PCA matrix
         pca_matrix = adata.obsm["X_pca"]

@@ -18,7 +18,7 @@ def create_dashboard(result_path, plot_path=None):
     # Define radar groups
     # ----------------------------
     radar_groups = {
-        "Annotation-Dependent Metrics (Best=Max)": ["ARI", "AMI", "Completeness","Homogeneity", "V-Measure", "Purity"],
+        "Annotation-Dependent Metrics (Best=Max)": ["ARI", "AMI","NMI", "Completeness","Homogeneity", "V-Measure", "Purity"],
         "Annotation-Independent Transcriptomic Coherence and Spatial Compactness Metrics (Best=Max)": ["Silhouette-Spatial","Silhouette", "ASW"],
         "Annotation-Independent Transcriptomic Coherence and Spatial Compactness Metrics (Best=Min)": ["Davies-Bouldin", "CHAOS"],
         "Annotation-Independent Spatial Compactness Metrics and Fragmentation Level (Best=Min)": ["Average-Dispersion","PAS"]
@@ -135,7 +135,7 @@ def create_dashboard(result_path, plot_path=None):
         try:
             df_filtered = results_df[results_df["method"].isin(selected)]
             hover_metrics = [
-                "ARI","AMI","Homogeneity","Purity",
+                "ARI","AMI","NMI","Homogeneity","Purity",
                 "Completeness","V-Measure","Silhouette-Spatial",
                 "Average-Dispersion","Silhouette","Davies-Bouldin",
                 "CHAOS","PAS","ASW"
@@ -206,6 +206,7 @@ def create_dashboard(result_path, plot_path=None):
     metric_interpretations = {
         "ARI": "Captures faithful domain recovery by measuring agreement between predicted clusters and known tissue domains.",
         "AMI": "Captures the amount of shared information between predicted and reference tissue domains.",
+        "NMI": "Captures the normalized information uncertainty between predicted and reference tissue domains.",
         "Homogeneity": "Relevant for detecting overmixing and consistent reference tissue domain labeling.",
         "Completeness": "Prevents splitting of the same tissue domain.",
         "V-Measure": "Balances avoiding overmixing and undersplitting of tissue domains.",
@@ -281,7 +282,7 @@ def create_dashboard(result_path, plot_path=None):
     # 4 Tables of Metric Scores with optional Color Highlighting + proper sorting
     # ----------------------------
     metric_tables = {
-        "Annotation-Dependent Metrics": ["ARI", "AMI", "Purity", "Homogeneity", "Completeness", "V-Measure"],
+        "Annotation-Dependent Metrics": ["ARI", "AMI","NMI", "Purity", "Homogeneity", "Completeness", "V-Measure"],
         "Spatially Aware Transcriptomic Metrics": ["Silhouette-Spatial", "Average-Dispersion"],  
         "Spatial Compactness Metrics": ["CHAOS", "PAS", "ASW"],
         "Transcriptomic Coherence Metrics": ["Davies-Bouldin", "Silhouette"]

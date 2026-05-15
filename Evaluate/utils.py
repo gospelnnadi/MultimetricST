@@ -96,9 +96,40 @@ def read_adata(path, is_h5ad=False):
         adata.var_names_make_unique()
         adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
     else: 
-        adata = sc.read_visium(path, count_file='filtered_feature_bc_matrix.h5', load_images=True)
-        adata.var_names_make_unique()
-        adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
+    
+        # adata = sc.read_visium(path, count_file='filtered_feature_bc_matrix.h5', load_images=True)
+        # adata.var_names_make_unique()
+        # adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
+        try:
+            adata = sc.read_visium(
+        path,
+        count_file='filtered_feature_bc_matrix.h5',
+        load_images=True
+            )
+
+            adata.var_names_make_unique()
+
+            # Ensure spatial coordinates are float
+            adata.obsm["spatial"] = (adata.obsm["spatial"].astype(float))
+
+        except Exception as e:
+
+            print(
+            f"Warnining scanpy read_visium failed with:\n{e}\n"
+            "Falling back to parquet reader..."
+            )
+            try:
+                adata = read_visium_parquet(path)
+                adata.var_names_make_unique()
+
+                # Ensure spatial coordinates are float
+                adata.obsm["spatial"] = (adata.obsm["spatial"].astype(float))
+            except Exception as e:
+               import sys
+               sys.exit(
+                f"Error read visium parquet failed with Error:\n{e}\n"
+                )
+
     return adata
 
 
@@ -116,4 +147,104 @@ def preprocess(adata, n_components=20,random_seed=35):
             data=pca ( adata.X, n_components= n_components,random_state=random_seed) #if data already a matrix
 
         adata.obsm["X_pca"]=data
+    return adata
+
+
+
+import scanpy as sc
+import pandas as pd
+import numpy as np
+import json
+from pathlib import Path
+from PIL import Image
+
+
+def read_visium_parquet(
+    path,
+    count_file="filtered_feature_bc_matrix.h5",
+    library_id="visium",
+    load_images=True,
+):
+    """
+    Read Visium dataset when spatial coordinates are stored
+    in tissue_positions.parquet instead of tissue_positions.csv.
+
+    Parameters
+    ----------
+    path : str or Path
+        Path to Visium sample directory.
+    count_file : str
+        10x filtered_feature_bc_matrix H5 file.
+    library_id : str
+        Library identifier stored in adata.uns["spatial"].
+    load_images : bool
+        Whether to load Visium tissue images.
+
+    Returns
+    -------
+    adata : AnnData
+    """
+
+    path = Path(path)
+
+    # -------------------------
+    # Read counts
+    # -------------------------
+    adata = sc.read_10x_h5(path / count_file)
+    adata.var_names_make_unique()
+
+    # -------------------------
+    # Read parquet coordinates
+    # -------------------------
+    tp = pd.read_parquet(
+        path / "spatial" / "tissue_positions.parquet"
+    )
+
+    tp = tp.set_index("barcode")
+
+    # Match barcode order
+    tp = tp.loc[adata.obs_names]
+
+    # Spatial coordinates
+    adata.obsm["spatial"] = tp[
+        ["pxl_col_in_fullres", "pxl_row_in_fullres"]
+    ].to_numpy()
+
+    # Optional metadata
+    for col in ["in_tissue", "array_row", "array_col"]:
+        if col in tp.columns:
+            adata.obs[col] = tp[col].values
+
+    # -------------------------
+    # Load images + scalefactors
+    # -------------------------
+    if load_images:
+
+        spatial_path = path / "spatial"
+
+        # Scalefactors
+        with open(
+            spatial_path / "scalefactors_json.json"
+        ) as f:
+            scalefactors = json.load(f)
+
+        images = {}
+
+        hires_path = spatial_path / "tissue_hires_image.png"
+        lowres_path = spatial_path / "tissue_lowres_image.png"
+
+        if hires_path.exists():
+            images["hires"] = np.array(Image.open(hires_path))
+
+        if lowres_path.exists():
+            images["lowres"] = np.array(Image.open(lowres_path))
+
+        adata.uns["spatial"] = {
+            library_id: {
+                "images": images,
+                "scalefactors": scalefactors,
+                "metadata": {}
+            }
+        }
+
     return adata
