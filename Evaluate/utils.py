@@ -67,11 +67,9 @@ def compute_PAS(clusterlabel,location):
         matched_location = location
         results = [fx_kNN(i,matched_location,k=10,cluster_in=clusterlabel) for i in range(matched_location.shape[0])]
         return np.sum(results)/len(clusterlabel)
-        
+    
 def compute_ASW(clusterlabel,location):
-        d = squareform(pdist(location))
-        return silhouette_score(X=d,labels=clusterlabel,metric='precomputed')  
-
+        return silhouette_score(X=location,labels=clusterlabel,metric='euclidean')  
 
 
 
@@ -96,10 +94,6 @@ def read_adata(path, is_h5ad=False):
         adata.var_names_make_unique()
         adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
     else: 
-    
-        # adata = sc.read_visium(path, count_file='filtered_feature_bc_matrix.h5', load_images=True)
-        # adata.var_names_make_unique()
-        # adata.obsm["spatial"]=adata.obsm["spatial"].astype(float)
         try:
             adata = sc.read_visium(
         path,
