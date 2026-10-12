@@ -1,6 +1,17 @@
 # MultimetricST Framework 
 **MultimetricST** is a Python-based framework for the **evaluation of spatial domain identification methods** in spatial transcriptomics.
 
+
+The framework enables **consistent, reproducible, and extensible benchmarking** by providing an integrated environment for:
+- cloning or installing method repositories,
+- executing spatial clustering methods,
+- preprocessing spatial transcriptomics data,
+- computing a comprehensive set of clustering evaluation metrics,
+- visualizing results through an interactive dashboard.
+
+MultimetricST accompanies the study:
+
+> *A Multi-Perspective Evaluation Framework of Spatial Transcriptomics Clustering Methods*
 ````
 @article{Nnadi2026MultimetricST,
   author    = {Nnadi, Gospel Ozioma and Bonnici, Vincenzo and Avesani, Simone and
@@ -16,18 +27,6 @@
   publisher = {Oxford University Press}
 }
 ````
-
-The framework enables **consistent, reproducible, and extensible benchmarking** by providing an integrated environment for:
-- cloning or installing method repositories,
-- executing spatial clustering methods,
-- preprocessing spatial transcriptomics data,
-- computing a comprehensive set of clustering evaluation metrics,
-- visualizing results through an interactive dashboard.
-
-MultimetricST accompanies the study:
-
-> *A Multi-Perspective Evaluation Framework of Spatial Transcriptomics Clustering Methods*
-
 ---
 
 ## Overview
